@@ -10,7 +10,7 @@ class VisitRecord {
 
     // 准备阶段数据
     var symptoms: [String] = []
-    var medications: [Medication] = []
+    @Relationship(deleteRule: .cascade) var medications: [Medication] = []
     var questions: [String] = []
 
     // 录音与摘要
@@ -28,9 +28,11 @@ class VisitRecord {
 class Medication {
     var name: String = ""
     var dose: String = ""
+    var isTakenToday: Bool = false
 
-    init(name: String, dose: String) {
+    init(name: String, dose: String, isTakenToday: Bool = false) {
         self.name = name
         self.dose = dose
+        self.isTakenToday = isTakenToday
     }
 }

@@ -2,8 +2,7 @@ import SwiftUI
 
 struct RecordView: View {
     @StateObject private var audioManager = AudioManager()
-    @State private var pulseScale: CGFloat = 1.0
-    var onStopRecording: () -> Void = {}
+    var onStopRecording: (URL?) -> Void = { _ in }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -25,9 +24,8 @@ struct RecordView: View {
             VStack(spacing: 32) {
                 Spacer()
 
-                // Pulsing Circle with Audio Feedback
+                // Pulsing Circle
                 ZStack {
-                    // Outer pulses - Scale based on audio level
                     Circle()
                         .stroke(AppTheme.teal.opacity(0.15), lineWidth: 2)
                         .frame(width: 180, height: 180)
@@ -38,7 +36,6 @@ struct RecordView: View {
                         .frame(width: 160, height: 160)
                         .scaleEffect(1.0 + CGFloat(audioManager.audioLevel) * 0.2)
 
-                    // Main Circle
                     Circle()
                         .fill(AppTheme.teal)
                         .frame(width: 140, height: 140)
@@ -57,22 +54,19 @@ struct RecordView: View {
                 }
 
                 VStack(spacing: 8) {
-                    Text(audioManager.isRecording ? "正在录音中…" : "录音已停止")
+                    Text("正在录音中…")
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.white.opacity(0.9))
-
-                    Text("把手机放在桌上即可，无需一直拿着")
+                    Text("已为您自动保存至本地")
                         .font(.system(size: 13))
                         .foregroundColor(.white.opacity(0.4))
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: 220)
                 }
 
                 Spacer()
 
                 Button(action: {
-                    audioManager.stopRecording()
-                    onStopRecording()
+                    let url = audioManager.stopRecording()
+                    onStopRecording(url)
                 }) {
                     HStack(spacing: 8) {
                         Image(systemName: "stop.fill")
@@ -91,15 +85,10 @@ struct RecordView: View {
             .background(Color(hex: "1a1a1a"))
         }
         .onAppear {
-            audioManager.startRecording()
-        }
-        .onDisappear {
-            audioManager.stopRecording()
+            // 使用时间戳作为文件名，确保唯一性
+            let timestamp = Int(Date().timeIntervalSince1970)
+            audioManager.startRecording(outputName: "visit_\(timestamp)")
         }
         .ignoresSafeArea(edges: .bottom)
     }
-}
-
-#Preview {
-    RecordView()
 }

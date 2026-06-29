@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import Combine
 
 class AIService: ObservableObject {
     @Published var isProcessing = false

@@ -45,8 +45,13 @@ struct ContentView: View {
                     }
                 case .record:
                     RecordView(
-                        onStopRecording: {
+                        onStopRecording: { url in
                             if let record = activeRecord {
+                                // 保存录音路径到数据库
+                                if let url = url {
+                                    record.audioPath = url.lastPathComponent
+                                }
+
                                 withAnimation { currentScreen = .processing }
                                 aiService.generateSummary(for: record) {
                                     withAnimation { currentScreen = .summary }

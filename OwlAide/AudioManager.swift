@@ -1,16 +1,20 @@
 import Foundation
 import AVFoundation
+import Combine
 
 class AudioManager: NSObject, ObservableObject, AVAudioRecorderDelegate {
     var audioRecorder: AVAudioRecorder?
+    var audioPlayer: AVAudioPlayer?
+
     @Published var isRecording = false
+    @Published var isPlaying = false
     @Published var recordingTime: TimeInterval = 0
     @Published var audioLevel: Float = 0.0
 
     private var timer: Timer?
     private var levelTimer: Timer?
 
-    func startRecording() {
+    func startRecording(outputName: String = "recording") {
         let recordingSession = AVAudioSession.sharedInstance()
 
         do {
@@ -24,7 +28,7 @@ class AudioManager: NSObject, ObservableObject, AVAudioRecorderDelegate {
                 AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
             ]
 
-            let audioFilename = getDocumentsDirectory().appendingPathComponent("recording.m4a")
+            let audioFilename = getDocumentsDirectory().appendingPathComponent("\(outputName).m4a")
 
             audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
             audioRecorder?.delegate = self
@@ -41,7 +45,6 @@ class AudioManager: NSObject, ObservableObject, AVAudioRecorderDelegate {
             levelTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
                 self.audioRecorder?.updateMeters()
                 let level = self.audioRecorder?.averagePower(forChannel: 0) ?? -160.0
-                // Normalize level from -160...0 to 0...1
                 self.audioLevel = max(0, (level + 160) / 160)
             }
 
@@ -50,7 +53,8 @@ class AudioManager: NSObject, ObservableObject, AVAudioRecorderDelegate {
         }
     }
 
-    func stopRecording() {
+    func stopRecording() -> URL? {
+        let url = audioRecorder?.url
         audioRecorder?.stop()
         isRecording = false
         timer?.invalidate()
@@ -58,6 +62,22 @@ class AudioManager: NSObject, ObservableObject, AVAudioRecorderDelegate {
 
         let recordingSession = AVAudioSession.sharedInstance()
         try? recordingSession.setActive(false)
+        return url
+    }
+
+    func startPlayback(audioURL: URL) {
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
+            audioPlayer?.play()
+            isPlaying = true
+        } catch {
+            print("Playback failed")
+        }
+    }
+
+    func stopPlayback() {
+        audioPlayer?.stop()
+        isPlaying = false
     }
 
     func getDocumentsDirectory() -> URL {

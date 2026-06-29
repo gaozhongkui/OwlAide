@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - HomeView (主导航容器)
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \VisitRecord.date, order: .reverse) private var records: [VisitRecord]
@@ -14,19 +15,22 @@ struct HomeView: View {
     var body: some View {
         VStack(spacing: 0) {
             ZStack {
-                if selectedTab == 0 {
+                switch selectedTab {
+                case 0:
                     MainDashboardView(
                         records: records,
                         onPrepareClick: onPrepareClick,
                         onRecordClick: onRecordClick,
                         onSummaryViewClick: onSummaryViewClick
                     )
-                } else if selectedTab == 1 {
+                case 1:
                     CalendarView()
-                } else if selectedTab == 2 {
+                case 2:
                     MedicationReminderView()
-                } else {
+                case 3:
                     FamilyView()
+                default:
+                    EmptyView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -47,86 +51,79 @@ struct HomeView: View {
     }
 }
 
-// --- Dashboard Subviews ---
+// MARK: - MainDashboardView (首页仪表盘)
+struct MainDashboardView: View {
+    let records: [VisitRecord]
+    var onPrepareClick: () -> Void
+    var onRecordClick: () -> Void
+    var onSummaryViewClick: (VisitRecord) -> Void
 
-struct NextVisitCard: View {
-    var onPrepare: () -> Void
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("下次就诊").font(.system(size: 11, weight: .semibold)).foregroundColor(AppTheme.teal).tracking(0.5)
-            VStack(alignment: .leading, spacing: 2) {
-                Text("7月3日（周四）上午9:00").font(.system(size: 20, weight: .bold))
-                Text("北京协和医院 · 心内科").font(.system(size: 14)).foregroundColor(AppTheme.textSub)
-            }
-            HStack(spacing: 8) {
-                Button(action: onPrepare) {
-                    Text("准备问诊").font(.system(size: 13, weight: .semibold)).foregroundColor(.white).frame(maxWidth: .infinity).padding(.vertical, 10).background(AppTheme.teal).cornerRadius(10)
+        ZStack(alignment: .top) {
+            AppTheme.background.ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                // Header
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("早上好").font(.system(size: 14)).opacity(0.85)
+                    Text("李奶奶").font(.system(size: 24, weight: .bold))
+                    Text("今天是 \(formattedToday())").font(.system(size: 13)).opacity(0.75)
                 }
-                Button(action: {}) {
-                    Text("取消提醒").font(.system(size: 13, weight: .semibold)).foregroundColor(AppTheme.teal).frame(maxWidth: .infinity).padding(.vertical, 10).background(AppTheme.tealLight).cornerRadius(10)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 20)
+                .padding(.top, 24)
+                .padding(.bottom, 28)
+                .background(
+                    LinearGradient(gradient: Gradient(colors: [AppTheme.teal, Color(hex: "2AA99B")]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                )
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        NextVisitCard(onPrepare: onPrepareClick)
+
+                        Text("快捷功能")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(.gray)
+
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                            QuickCard(icon: "mic.fill", iconColor: AppTheme.teal, bgColor: AppTheme.tealLight, title: "开始录音", desc: "就诊时使用", action: onRecordClick)
+                            QuickCard(icon: "clipboard.fill", iconColor: AppTheme.warm, bgColor: AppTheme.warmLight, title: "准备问诊", desc: "记录症状问题", action: onPrepareClick)
+                            QuickCard(icon: "doc.text.fill", iconColor: AppTheme.purple, bgColor: AppTheme.purpleLight, title: "上次摘要", desc: records.first?.department ?? "无记录", action: {
+                                if let last = records.first { onSummaryViewClick(last) }
+                            })
+                            QuickCard(icon: "paperplane.fill", iconColor: AppTheme.orange, bgColor: AppTheme.orangeLight, title: "发给子女", desc: "分享最新报告", action: {})
+                        }
+
+                        Text("就诊历史")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(.gray)
+
+                        if records.isEmpty {
+                            Text("暂无记录").font(.system(size: 14)).foregroundColor(.gray).padding()
+                        } else {
+                            ForEach(records) { record in
+                                HistoryItem(date: "\(formatDate(record.date))", title: record.hospital, isActive: record == records.first)
+                                    .onTapGesture { onSummaryViewClick(record) }
+                            }
+                        }
+                    }
+                    .padding(16)
                 }
             }
         }
-        .padding(16).background(AppTheme.cardWhite).cornerRadius(16)
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.tealLight, lineWidth: 1.5))
     }
-}
 
-struct QuickCard: View {
-    let icon: String
-    let iconColor: Color
-    let bgColor: Color
-    let title: String
-    let desc: String
-    let action: () -> Void
-    var body: some View {
-        Button(action: action) {
-            VStack(alignment: .leading, spacing: 8) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10).fill(bgColor).frame(width: 36, height: 36)
-                    Image(systemName: icon).foregroundColor(iconColor).font(.system(size: 18))
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(.system(size: 14, weight: .semibold)).foregroundColor(AppTheme.textMain)
-                    Text(desc).font(.system(size: 11)).foregroundColor(.gray)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading).padding(14).background(AppTheme.cardWhite).cornerRadius(14)
-            .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color(hex: "f0f0f0"), lineWidth: 1.5))
-        }
+    private func formattedToday() -> String {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "zh_CN")
+        f.dateFormat = "M月d日 EEEE"
+        return f.string(from: Date())
     }
-}
 
-struct HistoryItem: View {
-    let date: String
-    let title: String
-    let isActive: Bool
-    var body: some View {
-        HStack(spacing: 12) {
-            Circle().fill(isActive ? AppTheme.teal : Color.gray.opacity(0.3)).frame(width: 10, height: 10)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(date).font(.system(size: 12)).foregroundColor(.gray)
-                Text(title).font(.system(size: 14, weight: .semibold)).foregroundColor(AppTheme.textMain)
-            }
-            Spacer()
-            Image(systemName: "chevron.right").font(.system(size: 16)).foregroundColor(Color.gray.opacity(0.3))
-        }
-        .padding(.horizontal, 14).padding(.vertical, 12).background(AppTheme.cardWhite).cornerRadius(12)
-    }
-}
-
-struct TabBarItem: View {
-    let icon: String
-    let label: String
-    let isActive: Bool
-    let action: () -> Void
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 4) {
-                Image(systemName: icon).font(.system(size: 20))
-                Text(label).font(.system(size: 10, weight: .medium))
-            }
-            .foregroundColor(isActive ? AppTheme.teal : Color.gray.opacity(0.4)).frame(maxWidth: .infinity)
-        }
+    private func formatDate(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy年M月d日"
+        return f.string(from: date)
     }
 }

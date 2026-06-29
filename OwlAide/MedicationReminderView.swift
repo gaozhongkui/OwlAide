@@ -3,6 +3,7 @@ import SwiftData
 
 struct MedicationReminderView: View {
     @Query var medications: [Medication]
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         VStack(spacing: 0) {
@@ -16,29 +17,36 @@ struct MedicationReminderView: View {
                 VStack(spacing: 16) {
                     // 今日提醒卡片
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("今日剩余").font(.system(size: 14, weight: .bold)).foregroundColor(.gray)
+                        HStack {
+                            Text("今日进度").font(.system(size: 14, weight: .bold)).foregroundColor(.gray)
+                            Spacer()
+                            let takenCount = medications.filter { $0.isTakenToday }.count
+                            Text("\(takenCount)/\(medications.count)").font(.system(size: 12)).foregroundColor(AppTheme.teal)
+                        }
 
-                        MedicationReminderRow(time: "08:00", name: "苯磺酸氨氯地平片", dose: "5mg", status: .taken)
-                        MedicationReminderRow(time: "12:00", name: "阿托伐他汀钙片", dose: "20mg", status: .pending)
-                        MedicationReminderRow(time: "20:00", name: "塞来昔布胶囊", dose: "200mg", status: .pending)
+                        if medications.isEmpty {
+                            Text("暂无服药计划").font(.system(size: 14)).foregroundColor(.gray).padding(.vertical, 10)
+                        } else {
+                            ForEach(medications) { med in
+                                MedicationReminderRow(med: med)
+                            }
+                        }
                     }
                     .padding()
                     .background(Color.white)
                     .cornerRadius(16)
                     .shadow(color: Color.black.opacity(0.05), radius: 10)
 
-                    // 全部药品
+                    // 补充说明
                     Text("我的药箱").font(.system(size: 14, weight: .bold)).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .leading).padding(.top)
 
-                    if medications.isEmpty {
-                        Text("暂无药品记录，请在问诊准备中添加").font(.system(size: 14)).foregroundColor(.gray).padding()
-                    } else {
+                    VStack(spacing: 10) {
                         ForEach(medications) { med in
                             HStack {
-                                Text("💊").font(.system(size: 24))
+                                Text("💊").font(.system(size: 20))
                                 VStack(alignment: .leading) {
-                                    Text(med.name).font(.system(size: 16, weight: .semibold))
-                                    Text(med.dose).font(.system(size: 13)).foregroundColor(.gray)
+                                    Text(med.name).font(.system(size: 15, weight: .semibold))
+                                    Text(med.dose).font(.system(size: 12)).foregroundColor(.gray)
                                 }
                                 Spacer()
                             }
@@ -55,31 +63,33 @@ struct MedicationReminderView: View {
     }
 }
 
-enum MedicationStatus {
-    case taken, pending
-}
-
 struct MedicationReminderRow: View {
-    let time: String
-    let name: String
-    let dose: String
-    let status: MedicationStatus
+    @Bindable var med: Medication
 
     var body: some View {
         HStack(spacing: 12) {
-            Text(time).font(.system(size: 14, weight: .bold)).foregroundColor(status == .taken ? .gray : AppTheme.teal)
+            Text("今日").font(.system(size: 13, weight: .bold)).foregroundColor(med.isTakenToday ? .gray : AppTheme.teal)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(name).font(.system(size: 15, weight: .semibold)).strikethrough(status == .taken)
-                Text(dose).font(.system(size: 12)).foregroundColor(.gray)
+                Text(med.name)
+                    .font(.system(size: 15, weight: .semibold))
+                    .strikethrough(med.isTakenToday)
+                    .foregroundColor(med.isTakenToday ? .gray : AppTheme.textMain)
+                Text(med.dose).font(.system(size: 12)).foregroundColor(.gray)
             }
 
             Spacer()
 
-            if status == .taken {
-                Image(systemName: "checkmark.circle.fill").foregroundColor(AppTheme.teal)
+            if med.isTakenToday {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(AppTheme.teal)
+                    .font(.system(size: 24))
             } else {
-                Button(action: {}) {
+                Button(action: {
+                    withAnimation {
+                        med.isTakenToday = true
+                    }
+                }) {
                     Text("确认服用")
                         .font(.system(size: 12, weight: .bold))
                         .foregroundColor(AppTheme.teal)
@@ -90,5 +100,6 @@ struct MedicationReminderRow: View {
                 }
             }
         }
+        .padding(.vertical, 4)
     }
 }
