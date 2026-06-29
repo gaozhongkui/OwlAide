@@ -1,0 +1,316 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--surface-0)}
+.proto-wrap{display:flex;gap:20px;padding:1rem 0;overflow-x:auto;align-items:flex-start;flex-wrap:wrap}
+.phone{width:320px;flex-shrink:0;background:#fff;border-radius:44px;box-shadow:0 0 0 10px #1a1a1a,0 24px 48px rgba(0,0,0,.25);overflow:hidden;position:relative}
+.phone-inner{height:680px;overflow:hidden;position:relative;background:#f5f7fa}
+.status-bar{height:44px;background:inherit;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;font-size:12px;font-weight:600;color:#111}
+.nav-label{text-align:center;padding:4px 0 12px;font-size:13px;color:#888;font-weight:500}
+
+/* Screen selector */
+.screen-tabs{display:flex;gap:8px;padding:0 0 16px;flex-wrap:wrap}
+.stab{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid #ddd;color:#555;background:#fff;transition:all .15s}
+.stab.active{background:#1B8A7E;color:#fff;border-color:#1B8A7E}
+
+/* Screens */
+.screen{display:none;height:100%;flex-direction:column}
+.screen.active{display:flex}
+
+/* Colors */
+:root{--teal:#1B8A7E;--teal-light:#E8F5F3;--teal-mid:#5BB8AD;--warm:#FF7043;--warm-light:#FFF3EF;--text:#1a1a1a;--sub:#666;--bg:#f5f7fa;--card:#fff;--border:#eee}
+
+/* Home screen */
+.home-header{background:linear-gradient(160deg,#1B8A7E,#2AA99B);padding:24px 20px 28px;color:#fff}
+.home-greeting{font-size:14px;opacity:.85;margin-bottom:4px}
+.home-name{font-size:24px;font-weight:700}
+.home-sub{font-size:13px;opacity:.75;margin-top:4px}
+.home-body{flex:1;padding:16px;overflow-y:auto}
+.next-visit{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;border:1.5px solid #E8F5F3}
+.next-label{font-size:11px;color:#1B8A7E;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
+.next-date{font-size:20px;font-weight:700;color:#1a1a1a}
+.next-dept{font-size:14px;color:#666;margin-top:2px}
+.next-actions{display:flex;gap:8px;margin-top:12px}
+.btn-sm{flex:1;padding:10px;border-radius:10px;font-size:13px;font-weight:600;text-align:center;cursor:pointer}
+.btn-primary{background:#1B8A7E;color:#fff}
+.btn-outline{background:#E8F5F3;color:#1B8A7E}
+.section-title{font-size:13px;font-weight:600;color:#888;margin:16px 0 10px}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.quick-card{background:#fff;border-radius:14px;padding:14px;cursor:pointer;border:1.5px solid #f0f0f0}
+.quick-card:active{opacity:.85}
+.quick-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px}
+.quick-title{font-size:14px;font-weight:600;color:#1a1a1a}
+.quick-desc{font-size:11px;color:#888;margin-top:2px}
+.history-item{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.hist-dot{width:10px;height:10px;border-radius:50%;background:#1B8A7E;flex-shrink:0}
+.hist-info{flex:1}
+.hist-date{font-size:12px;color:#888}
+.hist-title{font-size:14px;font-weight:600;color:#1a1a1a}
+.hist-arrow{font-size:16px;color:#ccc}
+
+/* Prepare screen */
+.prep-header{background:#1B8A7E;padding:20px;color:#fff}
+.prep-title{font-size:20px;font-weight:700}
+.prep-sub{font-size:13px;opacity:.8;margin-top:4px}
+.prep-body{flex:1;padding:16px;overflow-y:auto}
+.prep-step{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px}
+.step-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.step-num{width:28px;height:28px;border-radius:8px;background:#1B8A7E;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-label{font-size:15px;font-weight:600;color:#1a1a1a}
+.voice-btn{width:100%;padding:14px;border-radius:12px;background:#E8F5F3;border:none;color:#1B8A7E;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;margin-bottom:8px}
+.voice-hint{font-size:12px;color:#aaa;text-align:center}
+.symptom-chip{display:inline-flex;align-items:center;background:#E8F5F3;color:#1B8A7E;padding:6px 10px;border-radius:20px;font-size:13px;margin:3px;gap:4px}
+.chip-x{font-size:14px;color:#1B8A7E;opacity:.6;cursor:pointer}
+.med-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f5f5f5}
+.med-icon{width:32px;height:32px;background:#FFF3EF;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.med-name{flex:1;font-size:14px;font-weight:500;color:#1a1a1a}
+.med-dose{font-size:12px;color:#888}
+.add-btn{width:100%;padding:12px;border-radius:10px;border:1.5px dashed #ddd;background:transparent;color:#aaa;font-size:14px;cursor:pointer;margin-top:8px}
+.q-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5}
+.q-num{width:22px;height:22px;border-radius:6px;background:#f0f0f0;font-size:12px;font-weight:600;color:#888;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.q-text{flex:1;font-size:14px;color:#1a1a1a}
+.bottom-btn{margin:16px;padding:16px;border-radius:14px;background:#1B8A7E;color:#fff;font-size:17px;font-weight:700;text-align:center;cursor:pointer}
+
+/* Recording screen */
+.rec-header{background:#1a1a1a;padding:24px 20px 20px;color:#fff}
+.rec-title{font-size:18px;font-weight:700}
+.rec-sub{font-size:13px;opacity:.6;margin-top:4px}
+.rec-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;background:#1a1a1a}
+.rec-circle{width:140px;height:140px;border-radius:50%;background:#1B8A7E;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;position:relative;margin-bottom:24px}
+.rec-circle::before{content:'';position:absolute;width:160px;height:160px;border-radius:50%;border:2px solid rgba(27,138,126,.3);animation:pulse 2s ease-in-out infinite}
+.rec-circle::after{content:'';position:absolute;width:180px;height:180px;border-radius:50%;border:2px solid rgba(27,138,126,.15);animation:pulse 2s ease-in-out infinite .4s}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:.7}}
+.rec-icon{font-size:40px;color:#fff;margin-bottom:4px}
+.rec-timer{font-size:14px;color:rgba(255,255,255,.8);font-weight:500}
+.rec-status{font-size:16px;color:rgba(255,255,255,.9);font-weight:500;margin-bottom:8px}
+.rec-hint{font-size:13px;color:rgba(255,255,255,.4);text-align:center;max-width:220px}
+.rec-stop{margin-top:32px;padding:14px 48px;border-radius:30px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+
+/* Summary screen */
+.sum-header{background:#1B8A7E;padding:20px;color:#fff}
+.sum-title{font-size:20px;font-weight:700}
+.sum-sub{font-size:13px;opacity:.8;margin-top:4px}
+.sum-body{flex:1;padding:16px;overflow-y:auto}
+.sum-card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px}
+.sum-card-title{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.sum-card-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.sum-card-label{font-size:14px;font-weight:700;color:#1a1a1a}
+.sum-item{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #f8f8f8;align-items:flex-start}
+.sum-dot{width:6px;height:6px;border-radius:50%;background:#1B8A7E;flex-shrink:0;margin-top:7px}
+.sum-text{font-size:14px;color:#333;line-height:1.5}
+.sum-highlight{background:#FFF8E1;border-radius:10px;padding:12px;margin-bottom:12px;display:flex;gap:10px;align-items:flex-start}
+.sum-warn-icon{font-size:20px;flex-shrink:0}
+.sum-warn-text{font-size:13px;color:#795548;line-height:1.6}
+.share-row{display:flex;gap:10px;padding:0 16px 16px}
+.share-btn{flex:1;padding:14px;border-radius:14px;font-size:15px;font-weight:600;text-align:center;cursor:pointer}
+
+/* Tab bar */
+.tab-bar{height:80px;background:#fff;border-top:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-around;padding:0 8px 16px;flex-shrink:0}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.tab-icon{font-size:22px;color:#ccc}
+.tab-icon.active{color:#1B8A7E}
+.tab-label{font-size:10px;color:#ccc;font-weight:500}
+.tab-label.active{color:#1B8A7E}
+</style>
+
+<h2 class="sr-only">就医助手 iOS 界面原型，点击标签切换不同页面</h2>
+
+<div class="screen-tabs" id="tabs">
+  <div class="stab active" onclick="showScreen('home',this)">首页</div>
+  <div class="stab" onclick="showScreen('prepare',this)">准备问诊</div>
+  <div class="stab" onclick="showScreen('record',this)">就诊录音</div>
+  <div class="stab" onclick="showScreen('summary',this)">AI 摘要</div>
+</div>
+
+<div class="proto-wrap">
+<div class="phone">
+<div class="phone-inner">
+  <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+
+  <!-- HOME -->
+  <div class="screen active" id="screen-home">
+    <div class="home-header">
+      <div class="home-greeting">早上好</div>
+      <div class="home-name">李奶奶</div>
+      <div class="home-sub">今天是 6月29日 星期一</div>
+    </div>
+    <div class="home-body">
+      <div class="next-visit">
+        <div class="next-label">下次就诊</div>
+        <div class="next-date">7月3日（周四）上午9:00</div>
+        <div class="next-dept">北京协和医院 · 心内科</div>
+        <div class="next-actions">
+          <div class="btn-sm btn-primary" onclick="showScreen('prepare',document.querySelectorAll('.stab')[1])">准备问诊</div>
+          <div class="btn-sm btn-outline">取消提醒</div>
+        </div>
+      </div>
+      <div class="section-title">快捷功能</div>
+      <div class="quick-grid">
+        <div class="quick-card" onclick="showScreen('record',document.querySelectorAll('.stab')[2])">
+          <div class="quick-icon" style="background:#E8F5F3"><i class="ti ti-microphone" style="color:#1B8A7E;font-size:20px"></i></div>
+          <div class="quick-title">开始录音</div>
+          <div class="quick-desc">就诊时使用</div>
+        </div>
+        <div class="quick-card" onclick="showScreen('prepare',document.querySelectorAll('.stab')[1])">
+          <div class="quick-icon" style="background:#FFF3EF"><i class="ti ti-clipboard-list" style="color:#FF7043;font-size:20px"></i></div>
+          <div class="quick-title">准备问诊</div>
+          <div class="quick-desc">记录症状问题</div>
+        </div>
+        <div class="quick-card" onclick="showScreen('summary',document.querySelectorAll('.stab')[3])">
+          <div class="quick-icon" style="background:#F3E8FF"><i class="ti ti-file-text" style="color:#7C3AED;font-size:20px"></i></div>
+          <div class="quick-title">上次摘要</div>
+          <div class="quick-desc">6月15日 骨科</div>
+        </div>
+        <div class="quick-card">
+          <div class="quick-icon" style="background:#FFF8E1"><i class="ti ti-send" style="color:#F59E0B;font-size:20px"></i></div>
+          <div class="quick-title">发给子女</div>
+          <div class="quick-desc">分享最新报告</div>
+        </div>
+      </div>
+      <div class="section-title">就诊历史</div>
+      <div class="history-item">
+        <div class="hist-dot"></div>
+        <div class="hist-info">
+          <div class="hist-date">2025年6月15日 · 骨科</div>
+          <div class="hist-title">右膝关节炎复诊</div>
+        </div>
+        <div class="hist-arrow">›</div>
+      </div>
+      <div class="history-item">
+        <div class="hist-dot" style="background:#ccc"></div>
+        <div class="hist-info">
+          <div class="hist-date">2025年5月20日 · 心内科</div>
+          <div class="hist-title">高血压定期随访</div>
+        </div>
+        <div class="hist-arrow">›</div>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <div class="tab-item"><i class="ti ti-home tab-icon active"></i><span class="tab-label active">首页</span></div>
+      <div class="tab-item"><i class="ti ti-calendar tab-icon"></i><span class="tab-label">就诊</span></div>
+      <div class="tab-item"><i class="ti ti-pill tab-icon"></i><span class="tab-label">用药</span></div>
+      <div class="tab-item"><i class="ti ti-user tab-icon"></i><span class="tab-label">家庭</span></div>
+    </div>
+  </div>
+
+  <!-- PREPARE -->
+  <div class="screen" id="screen-prepare">
+    <div class="prep-header">
+      <div style="font-size:13px;opacity:.75;margin-bottom:4px">7月3日 心内科</div>
+      <div class="prep-title">准备问诊</div>
+      <div class="prep-sub">告诉医生您的情况</div>
+    </div>
+    <div class="prep-body">
+      <div class="prep-step">
+        <div class="step-header">
+          <div class="step-num">1</div>
+          <div class="step-label">哪里不舒服？</div>
+        </div>
+        <button class="voice-btn"><i class="ti ti-microphone"></i> 按住说话</button>
+        <div class="voice-hint">或者点击下方添加症状</div>
+        <div style="margin-top:10px">
+          <span class="symptom-chip">最近头晕 <span class="chip-x">×</span></span>
+          <span class="symptom-chip">睡眠不好 <span class="chip-x">×</span></span>
+          <span class="symptom-chip">血压偏高 <span class="chip-x">×</span></span>
+        </div>
+      </div>
+      <div class="prep-step">
+        <div class="step-header">
+          <div class="step-num">2</div>
+          <div class="step-label">目前在吃的药</div>
+        </div>
+        <div class="med-row">
+          <div class="med-icon">💊</div>
+          <div style="flex:1"><div class="med-name">苯磺酸氨氯地平片</div><div class="med-dose">每日一次 · 5mg</div></div>
+        </div>
+        <div class="med-row">
+          <div class="med-icon">💊</div>
+          <div style="flex:1"><div class="med-name">阿托伐他汀钙片</div><div class="med-dose">每晚一次 · 20mg</div></div>
+        </div>
+        <button class="add-btn">+ 拍药盒添加</button>
+      </div>
+      <div class="prep-step">
+        <div class="step-header">
+          <div class="step-num">3</div>
+          <div class="step-label">想问医生的问题</div>
+        </div>
+        <div class="q-item"><div class="q-num">1</div><div class="q-text">血压控制不好要换药吗？</div></div>
+        <div class="q-item"><div class="q-num">2</div><div class="q-text">头晕和高血压有关系吗？</div></div>
+        <button class="voice-btn" style="margin-top:10px"><i class="ti ti-microphone"></i> 说出您的问题</button>
+      </div>
+    </div>
+    <div class="bottom-btn" onclick="showScreen('record',document.querySelectorAll('.stab')[2])">准备好了，开始就诊 →</div>
+  </div>
+
+  <!-- RECORD -->
+  <div class="screen" id="screen-record">
+    <div class="rec-header">
+      <div class="rec-title">就诊录音</div>
+      <div class="rec-sub">7月3日 · 心内科 · 协和医院</div>
+    </div>
+    <div class="rec-body">
+      <div class="rec-circle">
+        <i class="ti ti-microphone rec-icon"></i>
+        <div class="rec-timer">03:24</div>
+      </div>
+      <div class="rec-status">正在录音中…</div>
+      <div class="rec-hint">把手机放在桌上即可，无需一直拿着</div>
+      <button class="rec-stop" onclick="showScreen('summary',document.querySelectorAll('.stab')[3])">结束录音，生成摘要</button>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="screen" id="screen-summary">
+    <div class="sum-header">
+      <div style="font-size:13px;opacity:.75;margin-bottom:4px">6月15日 · 骨科</div>
+      <div class="sum-title">就诊摘要</div>
+      <div class="sum-sub">AI 已为您整理好就诊内容</div>
+    </div>
+    <div class="sum-body">
+      <div class="sum-highlight">
+        <div class="sum-warn-icon">⚠️</div>
+        <div class="sum-warn-text">医生叮嘱：<strong>两周内避免爬楼梯</strong>，如膝盖红肿请立即就诊</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-card-title">
+          <div class="sum-card-icon" style="background:#E8F5F3"><i class="ti ti-stethoscope" style="color:#1B8A7E"></i></div>
+          <div class="sum-card-label">诊断结论</div>
+        </div>
+        <div class="sum-item"><div class="sum-dot"></div><div class="sum-text">右膝关节炎，轻度磨损，暂不需要手术</div></div>
+        <div class="sum-item"><div class="sum-dot"></div><div class="sum-text">建议加强股四头肌锻炼，减轻关节负担</div></div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-card-title">
+          <div class="sum-card-icon" style="background:#FFF3EF"><i class="ti ti-pill" style="color:#FF7043"></i></div>
+          <div class="sum-card-label">用药安排</div>
+        </div>
+        <div class="sum-item"><div class="sum-dot" style="background:#FF7043"></div><div class="sum-text">塞来昔布胶囊 200mg · 每日两次 · 饭后服用 · 共14天</div></div>
+        <div class="sum-item"><div class="sum-dot" style="background:#FF7043"></div><div class="sum-text">硫酸氨基葡萄糖片 · 每日三次 · 长期服用</div></div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-card-title">
+          <div class="sum-card-icon" style="background:#F3E8FF"><i class="ti ti-calendar" style="color:#7C3AED"></i></div>
+          <div class="sum-card-label">复诊安排</div>
+        </div>
+        <div class="sum-item"><div class="sum-dot" style="background:#7C3AED"></div><div class="sum-text">一个月后复查（7月15日前）</div></div>
+        <div class="sum-item"><div class="sum-dot" style="background:#7C3AED"></div><div class="sum-text">届时带上膝关节X光片对比</div></div>
+      </div>
+    </div>
+    <div class="share-row">
+      <div class="share-btn" style="background:#1B8A7E;color:#fff">发给子女</div>
+      <div class="share-btn" style="background:#E8F5F3;color:#1B8A7E">保存本地</div>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script>
+function showScreen(id, tab) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  if (tab) tab.classList.add('active');
+}
+</script>

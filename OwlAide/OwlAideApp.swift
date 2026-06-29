@@ -1,11 +1,5 @@
-//
-//  OwlAideApp.swift
-//  OwlAide
-//
-//  Created by gaozhongkui on 2026/6/29.
-//
-
 import SwiftUI
+import SwiftData
 
 @main
 struct OwlAideApp: App {
@@ -13,5 +7,6 @@ struct OwlAideApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: [VisitRecord.self, Medication.self])
     }
 }
