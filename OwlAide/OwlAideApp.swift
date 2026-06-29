@@ -7,6 +7,6 @@ struct OwlAideApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [VisitRecord.self, Medication.self])
+        .modelContainer(for: [VisitRecord.self, Medication.self, FamilyMember.self])
     }
 }

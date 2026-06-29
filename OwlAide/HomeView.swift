@@ -5,6 +5,7 @@ import SwiftData
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \VisitRecord.date, order: .reverse) private var records: [VisitRecord]
+    @Query private var familyMembers: [FamilyMember]
 
     var onPrepareClick: () -> Void = {}
     var onRecordClick: () -> Void = {}
@@ -19,9 +20,11 @@ struct HomeView: View {
                 case 0:
                     MainDashboardView(
                         records: records,
+                        familyMembers: familyMembers,
                         onPrepareClick: onPrepareClick,
                         onRecordClick: onRecordClick,
-                        onSummaryViewClick: onSummaryViewClick
+                        onSummaryViewClick: onSummaryViewClick,
+                        onFamilyTabClick: { selectedTab = 3 }
                     )
                 case 1:
                     CalendarView()
@@ -54,9 +57,11 @@ struct HomeView: View {
 // MARK: - MainDashboardView (首页仪表盘)
 struct MainDashboardView: View {
     let records: [VisitRecord]
+    let familyMembers: [FamilyMember]
     var onPrepareClick: () -> Void
     var onRecordClick: () -> Void
     var onSummaryViewClick: (VisitRecord) -> Void
+    var onFamilyTabClick: () -> Void
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -65,8 +70,31 @@ struct MainDashboardView: View {
             VStack(spacing: 0) {
                 // Header
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("早上好").font(.system(size: 14)).opacity(0.85)
-                    Text("李奶奶").font(.system(size: 24, weight: .bold))
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("早上好").font(.system(size: 14)).opacity(0.85)
+                            Text("李奶奶").font(.system(size: 24, weight: .bold))
+                        }
+                        Spacer()
+                        // 紧急呼叫按钮 (参考竞品安全功能)
+                        if let emergencyContact = familyMembers.first(where: { $0.isEmergencyContact }) {
+                            Button(action: {
+                                if let url = URL(string: "tel://\(emergencyContact.phoneNumber)") {
+                                    UIApplication.shared.open(url)
+                                }
+                            }) {
+                                VStack(spacing: 4) {
+                                    Image(systemName: "phone.fill.badge.plus")
+                                        .font(.system(size: 20))
+                                    Text("一键呼救").font(.system(size: 10, weight: .bold))
+                                }
+                                .foregroundColor(.white)
+                                .padding(10)
+                                .background(Color.red.opacity(0.8))
+                                .cornerRadius(12)
+                            }
+                        }
+                    }
                     Text("今天是 \(formattedToday())").font(.system(size: 13)).opacity(0.75)
                 }
                 .foregroundColor(.white)
@@ -92,7 +120,40 @@ struct MainDashboardView: View {
                             QuickCard(icon: "doc.text.fill", iconColor: AppTheme.purple, bgColor: AppTheme.purpleLight, title: "上次摘要", desc: records.first?.department ?? "无记录", action: {
                                 if let last = records.first { onSummaryViewClick(last) }
                             })
-                            QuickCard(icon: "paperplane.fill", iconColor: AppTheme.orange, bgColor: AppTheme.orangeLight, title: "发给子女", desc: "分享最新报告", action: {})
+                            // 优化：点击发给子女跳转到家庭页面，或直接触发分享
+                            QuickCard(icon: "paperplane.fill", iconColor: AppTheme.orange, bgColor: AppTheme.orangeLight, title: "发给子女", desc: familyMembers.isEmpty ? "点击添加家人" : "已绑定 \(familyMembers.count) 位家人", action: {
+                                if familyMembers.isEmpty {
+                                    onFamilyTabClick()
+                                } else if let last = records.first {
+                                    shareRecord(last)
+                                } else {
+                                    onFamilyTabClick()
+                                }
+                            })
+                        }
+
+                        // 家人动态 (参考竞品：展示家人是否已查看)
+                        if !familyMembers.isEmpty {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("家人动态")
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundColor(.gray)
+
+                                HStack {
+                                    Image(systemName: "checkmark.shield.fill")
+                                        .foregroundColor(AppTheme.teal)
+                                    Text("您的健康状况已与 \(familyMembers.count) 位家人保持同步")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.gray)
+                                    Spacer()
+                                    Button("查看") { onFamilyTabClick() }
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundColor(AppTheme.teal)
+                                }
+                                .padding()
+                                .background(Color.white)
+                                .cornerRadius(12)
+                            }
                         }
 
                         Text("就诊历史")
@@ -125,5 +186,14 @@ struct MainDashboardView: View {
         let f = DateFormatter()
         f.dateFormat = "yyyy年M月d日"
         return f.string(from: date)
+    }
+
+    private func shareRecord(_ record: VisitRecord) {
+        let text = "【OwlAide 就诊报告】\n科室：\(record.department)\n建议：\(record.doctorAdvice)\n详细内容已同步至 OwlAide 家庭分享。"
+        let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootVC = windowScene.windows.first?.rootViewController {
+            rootVC.present(av, animated: true)
+        }
     }
 }
