@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import CloudKit
 
 /// 封装 CloudKit 操作：保存记录、创建 CKShare、接受分享、拉取共享记录
@@ -48,19 +49,7 @@ class CloudKitService: ObservableObject {
         share[CKShare.SystemFieldKey.title] = "\(record.department)就诊报告 - \(formatDate(record.date))"
         share[CKShare.SystemFieldKey.shareType] = "com.owl.aide.report"
 
-        // 4. 自动添加家人参与者（通过 email 查找 iCloud 账号）
-        var hasAutoParticipants = false
-        for email in recipientEmails {
-            guard !email.isEmpty else { continue }
-            let lookupInfo = CKUserIdentity.LookupInfo(emailAddress: email)
-            let participant = CKShare.Participant(userIdentity: lookupInfo, role: .unknown)
-            participant.permission = .readOnly
-            participant.acceptanceStatus = .pending
-            share.addParticipant(participant)
-            hasAutoParticipants = true
-        }
-
-        // 5. 同时保存根记录和 share
+        // 4. 同时保存根记录和 share（参与者通过 UICloudSharingController 手动添加）
         let recordsToSave: [CKRecord] = [savedRecord, share]
         let modifyOp = CKModifyRecordsOperation(recordsToSave: recordsToSave, recordIDsToDelete: nil)
         modifyOp.savePolicy = .changedKeys

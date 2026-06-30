@@ -1,5 +1,6 @@
 import UserNotifications
 import Foundation
+import Combine
 
 /// 本地通知管理：用药提醒、复诊提醒
 /// 完全本地，无需服务器，免费

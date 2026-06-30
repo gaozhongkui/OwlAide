@@ -1,5 +1,6 @@
 import HealthKit
 import Foundation
+import Combine
 
 /// HealthKit 健康数据集成：血压、心率、步数
 /// 完全本地，免费，不需要服务器

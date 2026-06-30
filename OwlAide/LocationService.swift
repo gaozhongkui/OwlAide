@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import CoreLocation
 
 /// 定位服务：获取当前位置用于紧急呼救

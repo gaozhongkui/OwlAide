@@ -75,10 +75,8 @@ struct HomeView: View {
             do {
                 let share = try await CloudKitService.shared.shareRecord(record, recipientEmails: emails)
                 await MainActor.run {
-                    if emails.isEmpty {
-                        self.cloudShare = share
-                        self.showCloudSharing = true
-                    }
+                    self.cloudShare = share
+                    self.showCloudSharing = true
                 }
             } catch {
                 await MainActor.run {
