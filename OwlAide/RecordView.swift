@@ -8,9 +8,9 @@ struct RecordView: View {
         VStack(spacing: 0) {
             // Header
             VStack(alignment: .leading, spacing: 4) {
-                Text("就诊录音")
+                Text("Visit Recording")
                     .font(.system(size: 18, weight: .bold))
-                Text("7月3日 · 心内科 · 协和医院")
+                Text("July 3 · Cardiology · General Hospital")
                     .font(.system(size: 13))
                     .opacity(0.6)
             }
@@ -54,10 +54,10 @@ struct RecordView: View {
                 }
 
                 VStack(spacing: 8) {
-                    Text("正在录音中…")
+                    Text("Recording...")
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.white.opacity(0.9))
-                    Text("已为您自动保存至本地")
+                    Text("Saved automatically to local storage")
                         .font(.system(size: 13))
                         .foregroundColor(.white.opacity(0.4))
                 }
@@ -70,7 +70,7 @@ struct RecordView: View {
                 }) {
                     HStack(spacing: 8) {
                         Image(systemName: "stop.fill")
-                        Text("结束录音，生成摘要")
+                        Text("End Recording & Summarize")
                     }
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(.white)
@@ -85,7 +85,7 @@ struct RecordView: View {
             .background(Color(hex: "1a1a1a"))
         }
         .onAppear {
-            // 使用时间戳作为文件名，确保唯一性
+            // Unique filename with timestamp
             let timestamp = Int(Date().timeIntervalSince1970)
             audioManager.startRecording(outputName: "visit_\(timestamp)")
         }

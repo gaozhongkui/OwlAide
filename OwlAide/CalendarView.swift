@@ -7,7 +7,7 @@ struct CalendarView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Text("就诊计划")
+            Text("Visit Schedule")
                 .font(AppTheme.titleFont)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
@@ -15,12 +15,12 @@ struct CalendarView: View {
 
             ScrollView {
                 VStack(spacing: 16) {
-                    // 即将就诊（从真实数据中筛选未来的记录）
+                    // Upcoming Visits (filter future records from real data)
                     let upcomingVisits = records.filter { $0.date >= Date() }
                     if let nextVisit = upcomingVisits.first {
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
-                                Text("待就诊")
+                                Text("Upcoming")
                                     .font(AppTheme.captionFont)
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 8)
@@ -33,7 +33,7 @@ struct CalendarView: View {
                                     .foregroundColor(.gray)
                             }
 
-                            Text("\(nextVisit.department)定期复查")
+                            Text("\(nextVisit.department) Follow-up")
                                 .font(AppTheme.titleFont)
                             Text("\(nextVisit.hospital)")
                                 .font(AppTheme.bodyFont)
@@ -44,10 +44,10 @@ struct CalendarView: View {
                         .cornerRadius(16)
                         .shadow(color: Color.black.opacity(0.05), radius: 10)
 
-                        // 后续就诊
+                        // Future Visits
                         if upcomingVisits.count > 1 {
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("后续就诊计划")
+                                Text("Future Visits")
                                     .font(AppTheme.captionFont)
                                     .foregroundColor(.gray)
                                 ForEach(upcomingVisits.dropFirst()) { visit in
@@ -74,10 +74,10 @@ struct CalendarView: View {
                             Image(systemName: "calendar.badge.plus")
                                 .font(.system(size: 50))
                                 .foregroundColor(AppTheme.tealLight)
-                            Text("暂无就诊计划")
+                            Text("No upcoming visits")
                                 .font(AppTheme.bodyFont)
                                 .foregroundColor(.gray)
-                            Text("在首页点击「准备问诊」创建新的就诊记录")
+                            Text("Tap 'Prepare' on the Home screen to create a new visit record.")
                                 .font(AppTheme.captionFont)
                                 .foregroundColor(.gray)
                                 .multilineTextAlignment(.center)
@@ -88,10 +88,10 @@ struct CalendarView: View {
                         .cornerRadius(16)
                     }
 
-                    // 历史记录
+                    // History
                     let pastVisits = records.filter { $0.date < Date() }
                     if !pastVisits.isEmpty {
-                        Text("历史记录")
+                        Text("History")
                             .font(AppTheme.bodyFont)
                             .foregroundColor(.gray)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -114,8 +114,8 @@ struct CalendarView: View {
 
     private func formatDate(_ date: Date) -> String {
         let f = DateFormatter()
-        f.locale = Locale(identifier: "zh_CN")
-        f.dateFormat = "M月d日 EEEE"
+        f.locale = Locale(identifier: "en_US")
+        f.dateFormat = "MMM d, EEEE"
         return f.string(from: date)
     }
 
@@ -127,7 +127,7 @@ struct CalendarView: View {
 
     private func formatShortDate(_ date: Date) -> String {
         let f = DateFormatter()
-        f.dateFormat = "MM月dd日"
+        f.dateFormat = "MMM d"
         return f.string(from: date)
     }
 }

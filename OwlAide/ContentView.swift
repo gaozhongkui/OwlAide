@@ -48,7 +48,7 @@ struct ContentView: View {
                     RecordView(
                         onStopRecording: { url in
                             if let record = activeRecord {
-                                // 保存录音路径到数据库
+                                // Save recording path to database
                                 if let url = url {
                                     record.audioPath = url.lastPathComponent
                                 }
@@ -83,7 +83,7 @@ struct ContentView: View {
         )
         modelContext.insert(newRecord)
         activeRecord = newRecord
-        // 自动创建复诊提醒（就诊前一天通知）
+        // Automatically create a follow-up reminder (notify the day before the visit)
         NotificationManager.shared.scheduleFollowUpReminder(visitRecord: newRecord)
     }
 }

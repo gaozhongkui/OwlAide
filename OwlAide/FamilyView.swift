@@ -23,9 +23,9 @@ struct FamilyView: View {
         VStack(spacing: 0) {
             // Header
             VStack(alignment: .leading, spacing: 4) {
-                Text("家庭共享中心")
+                Text("Family Sharing Center")
                     .font(.system(size: 22, weight: .bold))
-                Text("让子女随时了解您的健康动态")
+                Text("Keep your children informed about your health")
                     .font(.system(size: 13))
                     .opacity(0.8)
             }
@@ -36,12 +36,12 @@ struct FamilyView: View {
 
             ScrollView {
                 VStack(spacing: 20) {
-                    // iCloud 共享状态卡片
+                    // iCloud Sharing Status Card
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("iCloud 安全分享")
+                            Text("Secure iCloud Sharing")
                                 .font(.system(size: 15, weight: .bold))
-                            Text("通过 Apple iCloud 加密分享就诊报告，子女用自己的 Apple ID 查看，数据不经过第三方服务器。")
+                            Text("Share visit reports securely via encrypted Apple iCloud. Family members view with their own Apple ID; data never touches third-party servers.")
                                 .font(.system(size: 12))
                                 .foregroundColor(.gray)
                         }
@@ -55,10 +55,10 @@ struct FamilyView: View {
                     .cornerRadius(16)
                     .shadow(color: Color.black.opacity(0.03), radius: 5)
 
-                    // 家人分享的报告
+                    // Reports Shared by Family
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
-                            Text("家人分享的报告").font(.system(size: 14, weight: .bold)).foregroundColor(.gray)
+                            Text("Reports Shared by Family").font(.system(size: 14, weight: .bold)).foregroundColor(.gray)
                             Spacer()
                             Button(action: {
                                 Task { await cloudKitService.fetchSharedRecords() }
@@ -74,10 +74,10 @@ struct FamilyView: View {
                                 Image(systemName: "tray")
                                     .font(.system(size: 30))
                                     .foregroundColor(.gray.opacity(0.5))
-                                Text("暂无家人分享的报告")
+                                Text("No reports shared by family")
                                     .font(.system(size: 13))
                                     .foregroundColor(.gray)
-                                Text("家人分享后，报告会出现在这里。\n您可以点击右上角刷新按钮查看最新分享。")
+                                Text("Shared reports will appear here.\nTap the refresh button in the top right to check for updates.")
                                     .font(.system(size: 11))
                                     .foregroundColor(.gray.opacity(0.7))
                                     .multilineTextAlignment(.center)
@@ -111,10 +111,10 @@ struct FamilyView: View {
                     .background(Color.white)
                     .cornerRadius(16)
 
-                    // 分享我的报告
+                    // Share My Reports
                     if !records.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
-                            Text("分享我的报告").font(.system(size: 14, weight: .bold)).foregroundColor(.gray)
+                            Text("Share My Reports").font(.system(size: 14, weight: .bold)).foregroundColor(.gray)
                             ForEach(records.prefix(3)) { record in
                                 Button(action: {
                                     shareRecord(record)
@@ -144,35 +144,35 @@ struct FamilyView: View {
                         .cornerRadius(16)
                     }
 
-                    // 家庭成员管理
+                    // Family Management
                     if familyMembers.isEmpty {
                         VStack(spacing: 15) {
                             Image(systemName: "person.2.badge.gearshape.fill")
                                 .font(.system(size: 60))
                                 .foregroundColor(AppTheme.tealLight)
                                 .padding(.top, 40)
-                            Text("还没有绑定家人")
+                            Text("No family members added yet")
                                 .font(.system(size: 16, weight: .medium))
-                            Text("添加家人后，他们可以收到您的就诊提醒和 AI 摘要，在紧急情况下也能快速联系。")
+                            Text("After adding family, they can receive your visit reminders and AI summaries, and be contacted quickly in emergencies.")
                                 .font(.system(size: 13))
                                 .foregroundColor(.gray)
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal, 40)
                         }
                     } else {
-                        // 紧急联系人
+                        // Emergency Contacts
                         if familyMembers.contains(where: { $0.isEmergencyContact }) {
                             VStack(alignment: .leading, spacing: 10) {
-                                Text("紧急联系人").font(.system(size: 14, weight: .bold)).foregroundColor(.gray)
+                                Text("Emergency Contacts").font(.system(size: 14, weight: .bold)).foregroundColor(.gray)
                                 ForEach(familyMembers.filter { $0.isEmergencyContact }) { member in
                                     FamilyMemberRow(member: member, totalRecords: records.count)
                                 }
                             }
                         }
 
-                        // 其他成员
+                        // Other Members
                         VStack(alignment: .leading, spacing: 10) {
-                            Text("家庭成员").font(.system(size: 14, weight: .bold)).foregroundColor(.gray)
+                            Text("Family Members").font(.system(size: 14, weight: .bold)).foregroundColor(.gray)
                             ForEach(familyMembers.filter { !$0.isEmergencyContact }) { member in
                                 FamilyMemberRow(member: member, totalRecords: records.count)
                             }
@@ -182,7 +182,7 @@ struct FamilyView: View {
                     Button(action: { showingAddMember = true }) {
                         HStack {
                             Image(systemName: "plus.circle.fill")
-                            Text("添加新的家人")
+                            Text("Add New Family Member")
                         }
                         .font(.system(size: 16, weight: .bold))
                         .foregroundColor(.white)
@@ -201,38 +201,38 @@ struct FamilyView: View {
         .sheet(isPresented: $showingAddMember) {
             NavigationStack {
                 Form {
-                    Section(header: Text("基本信息")) {
-                        TextField("姓名", text: $newMemberName)
-                        TextField("关系 (如: 大女儿)", text: $newMemberRelation)
-                        Picker("成员角色", selection: $newMemberRole) {
+                    Section(header: Text("Basic Information")) {
+                        TextField("Name", text: $newMemberName)
+                        TextField("Relationship (e.g. Daughter)", text: $newMemberRelation)
+                        Picker("Role", selection: $newMemberRole) {
                             ForEach(FamilyRole.allCases, id: \.self) { role in
                                 Text(role.rawValue).tag(role)
                             }
                         }
                     }
 
-                    Section(header: Text("联系方式")) {
-                        TextField("手机号", text: $newMemberPhone)
+                    Section(header: Text("Contact Info")) {
+                        TextField("Phone Number", text: $newMemberPhone)
                             .keyboardType(.phonePad)
-                        TextField("Apple ID 邮箱（用于自动分享报告）", text: $newMemberEmail)
+                        TextField("Apple ID Email (for automatic sharing)", text: $newMemberEmail)
                             .keyboardType(.emailAddress)
                             .autocapitalization(.none)
-                        Toggle("设为紧急联系人", isOn: $isEmergencyContact)
+                        Toggle("Set as Emergency Contact", isOn: $isEmergencyContact)
                             .tint(AppTheme.teal)
                     }
 
-                    Section(footer: Text("填写家人的 Apple ID 邮箱后，分享报告时将自动发送给他们，无需手动操作。")) {
+                    Section(footer: Text("Fill in their Apple ID email to automatically share reports with them without manual steps.")) {
                         EmptyView()
                     }
                 }
-                .navigationTitle("添加家人")
+                .navigationTitle("Add Family Member")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("取消") { showingAddMember = false }
+                        Button("Cancel") { showingAddMember = false }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("添加") {
+                        Button("Add") {
                             addMember()
                             showingAddMember = false
                         }
@@ -284,14 +284,14 @@ struct FamilyView: View {
                     self.showCloudSharing = true
                 }
             } catch {
-                print("分享失败: \(error.localizedDescription)")
+                print("Sharing failed: \(error.localizedDescription)")
             }
         }
     }
 
     private func formatDate(_ date: Date) -> String {
         let f = DateFormatter()
-        f.dateFormat = "M月d日"
+        f.dateFormat = "MMM d"
         return f.string(from: date)
     }
 }
@@ -338,12 +338,12 @@ struct FamilyMemberRow: View {
                     }
                 }
 
-                Text("已同步 \(member.syncCount) 条就诊摘要")
+                Text("Synced \(member.syncCount) visit summaries")
                     .font(AppTheme.captionFont)
                     .foregroundColor(.gray)
 
                 if let lastDate = member.lastSyncDate {
-                    Text("最近同步: \(relativeTime(from: lastDate))")
+                    Text("Last synced: \(relativeTime(from: lastDate))")
                         .font(.system(size: 11))
                         .foregroundColor(.gray.opacity(0.7))
                 }
@@ -358,12 +358,12 @@ struct FamilyMemberRow: View {
 
     private func relativeTime(from date: Date) -> String {
         let interval = Date().timeIntervalSince(date)
-        if interval < 60 { return "刚刚" }
-        if interval < 3600 { return "\(Int(interval / 60)) 分钟前" }
-        if interval < 86400 { return "\(Int(interval / 3600)) 小时前" }
-        if interval < 259200 { return "\(Int(interval / 86400)) 天前" }
+        if interval < 60 { return "Just now" }
+        if interval < 3600 { return "\(Int(interval / 60))m ago" }
+        if interval < 86400 { return "\(Int(interval / 3600))h ago" }
+        if interval < 259200 { return "\(Int(interval / 86400))d ago" }
         let f = DateFormatter()
-        f.dateFormat = "MM月dd日"
+        f.dateFormat = "MMM dd"
         return f.string(from: date)
     }
 }

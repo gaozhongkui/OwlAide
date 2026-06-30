@@ -25,11 +25,11 @@ struct ProcessingView: View {
             }
 
             VStack(spacing: 8) {
-                Text("AI 正在为您整理摘要...")
+                Text("AI is generating your summary...")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(AppTheme.textMain)
 
-                Text("正在分析医生叮嘱与用药建议")
+                Text("Analyzing doctor's advice and medication...")
                     .font(.system(size: 14))
                     .foregroundColor(AppTheme.textSub)
             }

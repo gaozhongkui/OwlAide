@@ -1,23 +1,23 @@
 import SwiftUI
 
-// --- 基础组件库，供各页面复用 ---
+// --- Base Component Library for Reuse Across Pages ---
 
-// MARK: - 首页组件
+// MARK: - Home Components
 struct NextVisitCard: View {
     var onPrepare: () -> Void
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("下次就诊")
+            Text("NEXT VISIT")
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundColor(AppTheme.teal)
                 .tracking(0.5)
             VStack(alignment: .leading, spacing: 2) {
-                Text("7月3日（周四）上午9:00").font(.system(size: 20, weight: .bold))
-                Text("北京协和医院 · 心内科").font(.system(size: 14)).foregroundColor(AppTheme.textSub)
+                Text("July 3 (Thu) at 9:00 AM").font(.system(size: 20, weight: .bold))
+                Text("General Hospital · Cardiology").font(.system(size: 14)).foregroundColor(AppTheme.textSub)
             }
             HStack(spacing: 8) {
                 Button(action: onPrepare) {
-                    Text("准备问诊")
+                    Text("Prepare")
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -26,7 +26,7 @@ struct NextVisitCard: View {
                         .cornerRadius(10)
                 }
                 Button(action: {}) {
-                    Text("取消提醒")
+                    Text("Cancel")
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundColor(AppTheme.teal)
                         .frame(maxWidth: .infinity)
@@ -109,7 +109,7 @@ struct TabBarItem: View {
     }
 }
 
-// MARK: - 准备问诊组件
+// MARK: - Preparation Components
 struct PrepStepCard<Content: View>: View {
     let number: Int
     let title: String
@@ -191,7 +191,7 @@ struct QuestionRow: View {
     }
 }
 
-// MARK: - 摘要专用组件
+// MARK: - Summary Components
 struct SummaryCard<Content: View>: View {
     let icon: String
     let iconColor: Color

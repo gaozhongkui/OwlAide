@@ -2,8 +2,8 @@ import Foundation
 import Combine
 import CloudKit
 
-/// 封装 CloudKit 操作：保存记录、创建 CKShare、接受分享、拉取共享记录
-/// 完全免费（CloudKit 免费额度足够家庭场景使用）
+/// Wraps CloudKit operations: saving records, creating CKShare, accepting shares, and fetching shared records.
+/// Fully free (CloudKit free tier is sufficient for family scenarios).
 class CloudKitService: ObservableObject {
     static let shared = CloudKitService()
 
@@ -20,35 +20,35 @@ class CloudKitService: ObservableObject {
         sharedDB = container.sharedCloudDatabase
     }
 
-    // MARK: - iCloud 账户状态
+    // MARK: - iCloud Account Status
 
     func checkAccountStatus() async -> CKAccountStatus? {
         try? await container.accountStatus()
     }
 
-    // MARK: - 保存就诊记录到 CloudKit 并创建 CKShare
+    // MARK: - Save Visit Record to CloudKit and Create CKShare
 
-    /// 分享就诊记录，返回 CKShare 供 UICloudSharingController 使用
+    /// Shares a visit record, returning a CKShare for UICloudSharingController.
     func shareRecord(_ record: VisitRecord) async throws -> CKShare {
         await MainActor.run { isUploading = true }
         defer { Task { @MainActor in isUploading = false } }
 
-        // 1. 将 VisitRecord 转为 CKRecord
+        // 1. Convert VisitRecord to CKRecord
         let ckRecord = CKRecord(recordType: "VisitRecord", recordID: CKRecord.ID(recordName: record.id.uuidString))
         ckRecord["jsonData"] = record.toJSON()
         ckRecord["department"] = record.department
         ckRecord["hospital"] = record.hospital
         ckRecord["date"] = record.date
 
-        // 2. 保存到私有数据库
+        // 2. Save to private database
         let savedRecord = try await privateDB.save(ckRecord)
 
-        // 3. 创建 CKShare
+        // 3. Create CKShare
         let share = CKShare(rootRecord: savedRecord)
-        share[CKShare.SystemFieldKey.title] = "\(record.department)就诊报告 - \(formatDate(record.date))"
+        share[CKShare.SystemFieldKey.title] = "\(record.department) Visit Report - \(formatDate(record.date))"
         share[CKShare.SystemFieldKey.shareType] = "com.owl.aide.report"
 
-        // 4. 同时保存根记录和 share（参与者通过 UICloudSharingController 手动添加）
+        // 4. Save both the root record and the share (participants added via UICloudSharingController)
         let recordsToSave: [CKRecord] = [savedRecord, share]
         let modifyOp = CKModifyRecordsOperation(recordsToSave: recordsToSave, recordIDsToDelete: nil)
         modifyOp.savePolicy = .changedKeys
@@ -66,7 +66,7 @@ class CloudKitService: ObservableObject {
         }
     }
 
-    // MARK: - 接受家人分享
+    // MARK: - Accept Family Share
 
     func acceptShare(url: URL) async throws {
         let metadata = try await container.shareMetadata(for: url)
@@ -86,7 +86,7 @@ class CloudKitService: ObservableObject {
         }
     }
 
-    // MARK: - 拉取家人分享的记录
+    // MARK: - Fetch Records Shared by Family
 
     func fetchSharedRecords() async {
         do {
@@ -116,27 +116,27 @@ class CloudKitService: ObservableObject {
                 self.sharedRecords = records
             }
         } catch {
-            print("拉取共享记录失败: \(error.localizedDescription)")
+            print("Failed to fetch shared records: \(error.localizedDescription)")
         }
     }
 
-    // MARK: - 删除共享记录
+    // MARK: - Delete Shared Record
 
     func deleteSharedRecord(_ recordID: CKRecord.ID) async throws {
         try await sharedDB.deleteRecord(withID: recordID)
         await fetchSharedRecords()
     }
 
-    // MARK: - 辅助
+    // MARK: - Helpers
 
     private func formatDate(_ date: Date) -> String {
         let f = DateFormatter()
-        f.dateFormat = "M月d日"
+        f.dateFormat = "MMM d"
         return f.string(from: date)
     }
 }
 
-/// 家人分享的就诊记录包装
+/// Wrapper for a visit record shared by a family member.
 struct SharedVisitRecord: Identifiable {
     let id = UUID()
     let record: VisitRecord

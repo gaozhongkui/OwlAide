@@ -9,7 +9,7 @@ struct MedicationReminderView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Text("用药提醒")
+            Text("Medication Reminders")
                 .font(AppTheme.titleFont)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
@@ -17,17 +17,17 @@ struct MedicationReminderView: View {
 
             ScrollView {
                 VStack(spacing: 16) {
-                    // 今日提醒卡片
+                    // Today's Progress Card
                     VStack(alignment: .leading, spacing: 16) {
                         HStack {
-                            Text("今日进度").font(AppTheme.bodyFont).foregroundColor(.gray)
+                            Text("Today's Progress").font(AppTheme.bodyFont).foregroundColor(.gray)
                             Spacer()
                             let takenCount = medications.filter { $0.isTakenToday }.count
                             Text("\(takenCount)/\(medications.count)").font(AppTheme.captionFont).foregroundColor(AppTheme.teal)
                         }
 
                         if medications.isEmpty {
-                            Text("暂无服药计划").font(AppTheme.bodyFont).foregroundColor(.gray).padding(.vertical, 10)
+                            Text("No medications scheduled").font(AppTheme.bodyFont).foregroundColor(.gray).padding(.vertical, 10)
                         } else {
                             ForEach(medications) { med in
                                 MedicationReminderRow(med: med)
@@ -39,8 +39,8 @@ struct MedicationReminderView: View {
                     .cornerRadius(16)
                     .shadow(color: Color.black.opacity(0.05), radius: 10)
 
-                    // 补充说明
-                    Text("我的药箱").font(AppTheme.bodyFont).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .leading).padding(.top)
+                    // My Medbox
+                    Text("My Medbox").font(AppTheme.bodyFont).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .leading).padding(.top)
 
                     VStack(spacing: 10) {
                         ForEach(medications) { med in
@@ -63,7 +63,7 @@ struct MedicationReminderView: View {
         }
         .background(settings.backgroundColor)
         .onAppear {
-            // 确保通知权限并同步所有用药提醒
+            // Ensure notification permissions and sync all medication reminders
             NotificationManager.shared.requestAuthorization()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 NotificationManager.shared.syncMedications(medications)
@@ -77,7 +77,7 @@ struct MedicationReminderRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Text("今日").font(AppTheme.captionFont).foregroundColor(med.isTakenToday ? .gray : AppTheme.teal)
+            Text("Today").font(AppTheme.captionFont).foregroundColor(med.isTakenToday ? .gray : AppTheme.teal)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(med.name)
@@ -98,11 +98,11 @@ struct MedicationReminderRow: View {
                     withAnimation {
                         med.isTakenToday = true
                     }
-                    TTSService.shared.speak("已确认服用\(med.name)")
-                    // 取消补提醒
+                    TTSService.shared.speak("Confirmed taking \(med.name)")
+                    // Cancel reminder
                     NotificationManager.shared.cancelMedicationReminder(medicationName: med.name)
                 }) {
-                    Text("确认服用")
+                    Text("Take Now")
                         .font(AppTheme.buttonFont)
                         .foregroundColor(AppTheme.teal)
                         .padding(.horizontal, 14)

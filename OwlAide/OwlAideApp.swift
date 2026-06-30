@@ -13,23 +13,23 @@ struct OwlAideApp: App {
                 .environmentObject(settings)
                 .environmentObject(healthKit)
                 .onOpenURL { url in
-                    // 处理家人分享的 iCloud 链接
+                    // Handle iCloud share links from family
                     if url.absoluteString.contains("icloud.com/share") {
                         Task {
                             do {
                                 try await CloudKitService.shared.acceptShare(url: url)
                             } catch {
-                                print("接受分享失败: \(error.localizedDescription)")
+                                print("Failed to accept share: \(error.localizedDescription)")
                             }
                         }
                     }
                 }
                 .task {
-                    // 初始化通知权限
+                    // Initialize notification permissions
                     NotificationManager.shared.requestAuthorization()
-                    // 初始化 HealthKit（静默授权）
+                    // Initialize HealthKit (silent authorization)
                     await healthKit.requestAuthorization()
-                    // 检查购买状态
+                    // Check purchase status
                     await subscription.checkPurchaseStatus()
                 }
         }

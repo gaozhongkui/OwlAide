@@ -17,20 +17,20 @@ struct SubscriptionView: View {
                             .padding(.top, 20)
                         Text("OwlAide Pro")
                             .font(AppTheme.titleFont)
-                        Text("一次购买，永久使用")
+                        Text("One-time purchase, lifetime access")
                             .font(AppTheme.bodyFont)
                             .foregroundColor(.gray)
                     }
 
-                    // 当前状态
+                    // Current Status
                     if manager.isPurchased {
                         HStack {
                             Image(systemName: "checkmark.seal.fill")
                                 .foregroundColor(.green)
-                            Text("您已是 Pro 用户")
+                            Text("You are a Pro user")
                                 .font(AppTheme.bodyFont)
                             Spacer()
-                            Text("已解锁")
+                            Text("Unlocked")
                                 .font(AppTheme.captionFont)
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 4)
@@ -43,30 +43,30 @@ struct SubscriptionView: View {
                         .cornerRadius(14)
                     }
 
-                    // 功能对比
+                    // Feature Comparison
                     VStack(alignment: .leading, spacing: 0) {
-                        Text("Pro 专属功能")
+                        Text("Pro Exclusive Features")
                             .font(AppTheme.bodyFont)
                             .foregroundColor(.gray)
                             .padding(.bottom, 12)
 
-                        FeatureRow(feature: "🧠 AI 摘要", free: "本地分析", pro: "远程 GPT-4o", purchased: manager.isPurchased)
+                        FeatureRow(feature: "🧠 AI Summary", free: "Local Analysis", pro: "Remote GPT-4o", purchased: manager.isPurchased)
                         Divider()
-                        FeatureRow(feature: "☁️ iCloud 家庭分享", free: "单设备", pro: "多设备 + 家人共享", purchased: manager.isPurchased)
+                        FeatureRow(feature: "☁️ iCloud Family Share", free: "Single Device", pro: "Multi-device + Sharing", purchased: manager.isPurchased)
                         Divider()
-                        FeatureRow(feature: "🏥 复诊推送通知", free: "手动查看", pro: "自动提醒", purchased: manager.isPurchased)
+                        FeatureRow(feature: "🏥 Visit Reminders", free: "Manual", pro: "Automatic Push", purchased: manager.isPurchased)
                         Divider()
-                        FeatureRow(feature: "💊 用药提醒", free: "✅ 免费", pro: "✅ 免费", purchased: true)
+                        FeatureRow(feature: "💊 Med Reminders", free: "✅ Free", pro: "✅ Free", purchased: true)
                         Divider()
-                        FeatureRow(feature: "🎤 语音输入", free: "✅ 免费", pro: "✅ 免费", purchased: true)
+                        FeatureRow(feature: "🎤 Voice Input", free: "✅ Free", pro: "✅ Free", purchased: true)
                         Divider()
-                        FeatureRow(feature: "❤️ HealthKit", free: "✅ 免费", pro: "✅ 免费", purchased: true)
+                        FeatureRow(feature: "❤️ HealthKit", free: "✅ Free", pro: "✅ Free", purchased: true)
                     }
                     .padding()
                     .background(Color.white)
                     .cornerRadius(14)
 
-                    // 购买按钮
+                    // Purchase Buttons
                     if !manager.isPurchased {
                         VStack(spacing: 12) {
                             if manager.isLoading {
@@ -79,7 +79,7 @@ struct SubscriptionView: View {
                                 }) {
                                     HStack {
                                         Spacer()
-                                        Text("立即解锁 — \(product.displayPrice)")
+                                        Text("Unlock Now — \(product.displayPrice)")
                                             .font(AppTheme.buttonFont)
                                         Spacer()
                                     }
@@ -101,7 +101,7 @@ struct SubscriptionView: View {
                             Button(action: {
                                 Task { await manager.restorePurchases() }
                             }) {
-                                Text("恢复购买")
+                                Text("Restore Purchase")
                                     .font(AppTheme.captionFont)
                                     .foregroundColor(.gray)
                             }
@@ -115,7 +115,7 @@ struct SubscriptionView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("关闭") { dismiss() }
+                    Button("Close") { dismiss() }
                 }
             }
             .task {

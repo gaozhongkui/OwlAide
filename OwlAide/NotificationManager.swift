@@ -2,14 +2,14 @@ import UserNotifications
 import Foundation
 import Combine
 
-/// 本地通知管理：用药提醒、复诊提醒
-/// 完全本地，无需服务器，免费
+/// Local notification management: Medication reminders and follow-up alerts.
+/// Fully local, no server required, free to use.
 class NotificationManager: ObservableObject {
     static let shared = NotificationManager()
 
     @Published var isAuthorized = false
 
-    // MARK: - 权限
+    // MARK: - Permissions
 
     func requestAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
@@ -19,9 +19,9 @@ class NotificationManager: ObservableObject {
         }
     }
 
-    // MARK: - 用药提醒
+    // MARK: - Medication Reminders
 
-    /// 为指定药品创建每日定时提醒
+    /// Schedule a daily reminder for a specific medication.
     func scheduleMedicationReminder(medicationName: String, dose: String, timeString: String) {
         let parts = timeString.split(separator: ":")
         guard parts.count == 2,
@@ -29,7 +29,7 @@ class NotificationManager: ObservableObject {
               let minute = Int(parts[1]) else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "💊 该吃药了"
+        content.title = "💊 Time for Medication"
         content.body = "\(medicationName) · \(dose)"
         content.sound = .default
         content.badge = 1
@@ -45,14 +45,14 @@ class NotificationManager: ObservableObject {
 
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("用药提醒创建失败: \(error.localizedDescription)")
+                print("Failed to schedule medication reminder: \(error.localizedDescription)")
             }
         }
     }
 
-    /// 取消某个药品的所有提醒
+    /// Cancel all reminders for a specific medication.
     func cancelMedicationReminder(medicationName: String) {
-        // 根据名称模式移除
+        // Remove based on name pattern
         UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
             let ids = requests
                 .filter { $0.identifier.contains("medication_\(medicationName)") }
@@ -61,9 +61,9 @@ class NotificationManager: ObservableObject {
         }
     }
 
-    /// 同步所有用药提醒（从药品列表重建）
+    /// Sync all medication reminders (rebuild from medication list).
     func syncMedications(_ medications: [Medication]) {
-        // 先清除所有用药提醒
+        // Clear all medication reminders first
         UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
             let medIds = requests
                 .filter { $0.identifier.hasPrefix("medication_") }
@@ -71,7 +71,7 @@ class NotificationManager: ObservableObject {
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: medIds)
         }
 
-        // 重新创建
+        // Recreate
         for med in medications {
             scheduleMedicationReminder(
                 medicationName: med.name,
@@ -81,14 +81,14 @@ class NotificationManager: ObservableObject {
         }
     }
 
-    // MARK: - 复诊提醒
+    // MARK: - Follow-up Reminders
 
-    /// 创建复诊提醒（就诊前一天提醒）
+    /// Create a follow-up reminder (the day before the visit).
     func scheduleFollowUpReminder(visitRecord: VisitRecord) {
         guard let reminderDate = Calendar.current.date(byAdding: .day, value: -1, to: visitRecord.date) else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "🏥 明天有就诊"
+        content.title = "🏥 Upcoming Visit Tomorrow"
         content.body = "\(visitRecord.department) · \(visitRecord.hospital)"
         content.sound = .default
 
@@ -100,18 +100,18 @@ class NotificationManager: ObservableObject {
 
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("复诊提醒创建失败: \(error.localizedDescription)")
+                print("Failed to schedule follow-up reminder: \(error.localizedDescription)")
             }
         }
     }
 
-    // MARK: - 未服药提醒
+    // MARK: - Missed Dose Reminders
 
-    /// 如果过了提醒时间仍未确认服药，发送第二次提醒
+    /// Send a second reminder if medication hasn't been confirmed after the scheduled time.
     func scheduleMissedDoseReminder(medicationName: String, dose: String, delayMinutes: Int = 30) {
         let content = UNMutableNotificationContent()
-        content.title = "⚠️ 别忘了吃药"
-        content.body = "\(medicationName) · \(dose) 尚未确认服用"
+        content.title = "⚠️ Don't forget your meds"
+        content.body = "\(medicationName) · \(dose) has not been confirmed"
         content.sound = .default
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Double(delayMinutes * 60), repeats: false)

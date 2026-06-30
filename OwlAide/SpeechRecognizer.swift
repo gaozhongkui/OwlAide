@@ -3,18 +3,18 @@ import Combine
 import Speech
 import AVFoundation
 
-/// 封装系统 Speech 框架，提供实时语音识别和音频文件转文字能力
+/// Wraps the system Speech framework to provide real-time speech recognition and audio file transcription.
 class SpeechRecognizer: ObservableObject {
     @Published var recognizedText = ""
     @Published var isRecognizing = false
     @Published var authorizationStatus: SFSpeechRecognizerAuthorizationStatus = .notDetermined
 
-    private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh-CN"))!
+    private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
 
-    // MARK: - 权限
+    // MARK: - Permissions
 
     func requestAuthorization() {
         SFSpeechRecognizer.requestAuthorization { [weak self] status in
@@ -24,7 +24,7 @@ class SpeechRecognizer: ObservableObject {
         }
     }
 
-    // MARK: - 实时流式识别（用于按住说话）
+    // MARK: - Real-time Streaming Recognition (Hold-to-Talk)
 
     func startLiveRecognition() throws {
         stopLiveRecognition()
@@ -72,11 +72,11 @@ class SpeechRecognizer: ObservableObject {
         recognitionTask = nil
         isRecognizing = false
 
-        // 释放音频会话，避免阻塞其他音频组件
+        // Release audio session to avoid blocking other components
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 
-    // MARK: - 音频文件转文字（用于就诊录音后处理）
+    // MARK: - Audio File Transcription (Post-visit processing)
 
     func transcribeFile(url: URL, completion: @escaping (String) -> Void) {
         guard FileManager.default.fileExists(atPath: url.path) else {

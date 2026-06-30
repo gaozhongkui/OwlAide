@@ -1,8 +1,8 @@
 import SwiftUI
 import CloudKit
 
-/// UICloudSharingController 的 SwiftUI 包装
-/// 用于弹出系统原生分享界面，选择 iCloud 联系人共享就诊报告
+/// SwiftUI wrapper for UICloudSharingController.
+/// Used to present the system-native sharing interface to share visit reports with iCloud contacts.
 struct CloudSharingView: UIViewControllerRepresentable {
     let container: CKContainer
     let share: CKShare
@@ -40,7 +40,7 @@ struct CloudSharingView: UIViewControllerRepresentable {
         }
 
         func itemTitle(for csc: UICloudSharingController) -> String? {
-            return "就诊报告"
+            return "Visit Report"
         }
     }
 }

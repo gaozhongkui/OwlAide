@@ -5,12 +5,12 @@
   ],
   "products" : [
     {
-      "displayName" : "OwlAide Pro 永久解锁",
-      "description" : "一次性购买，永久解锁所有高级功能：远程 AI 摘要、iCloud 家庭分享、复诊推送通知。",
-      "displayPrice" : "¥20.00",
+      "displayName" : "OwlAide Pro Lifetime Unlock",
+      "description" : "One-time purchase for all premium features: Remote AI Summary, iCloud Family Sharing, and Visit Notifications.",
+      "displayPrice" : "$2.99",
       "familyShareable" : false,
       "internalID" : "com.owl.aide.pro.lifetime",
-      "locale" : "zh_CN",
+      "locale" : "en_US",
       "price" : "2.99",
       "referenceName" : "OwlAide Pro Lifetime",
       "subscriptionPeriod" : "P1Y",
@@ -18,16 +18,16 @@
     }
   ],
   "settings" : {
-    "_applicationTimezone" : "Asia\/Shanghai",
+    "_applicationTimezone" : "America/Los_Angeles",
     "_failTransactionsEnabled" : false,
-    "_locale" : "zh_CN",
-    "_localizedDescription" : "OwlAide Pro 内购测试配置",
-    "_localizedName" : "OwlAide StoreKit 测试",
+    "_locale" : "en_US",
+    "_localizedDescription" : "OwlAide Pro IAP Test Config",
+    "_localizedName" : "OwlAide StoreKit Test",
     "_storeKitError" : 0,
     "_storeKitErrors" : [
 
     ],
-    "_timezone" : "Asia\/Shanghai",
+    "_timezone" : "America/Los_Angeles",
     "_verifyReceiptsLocally" : true
   },
   "version" : {

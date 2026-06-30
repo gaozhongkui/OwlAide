@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import CoreLocation
 
-/// 定位服务：获取当前位置用于紧急呼救
+/// Location service: Gets the current location for emergency calls.
 class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     static let shared = LocationService()
 
@@ -18,20 +18,20 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     }
 
-    /// 请求定位权限并获取当前位置
+    /// Request location permission and get current location.
     func requestCurrentLocation() async -> CLLocation? {
         let status = manager.authorizationStatus
         authorizationStatus = status
 
-        // 已拒绝或受限，直接返回 nil
+        // Return nil if denied or restricted.
         if status == .denied || status == .restricted {
             return nil
         }
 
-        // 需要先请求权限
+        // Request permission if not determined.
         if status == .notDetermined {
             manager.requestWhenInUseAuthorization()
-            // 等待权限回调，最多 5 秒
+            // Wait for permission callback, max 5 seconds.
             try? await Task.sleep(nanoseconds: 5_000_000_000)
             if manager.authorizationStatus != .authorizedWhenInUse && manager.authorizationStatus != .authorizedAlways {
                 return nil
@@ -44,23 +44,23 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
 
-    /// 格式化为可读的地址描述
+    /// Format as a readable coordinate string.
     func formattedLocation() async -> String {
         guard let location = await requestCurrentLocation() else {
-            return "位置获取失败"
+            return "Failed to get location"
         }
         lastLocation = location
-        return "纬度:\(String(format: "%.4f", location.coordinate.latitude)) 经度:\(String(format: "%.4f", location.coordinate.longitude))"
+        return "Lat:\(String(format: "%.4f", location.coordinate.latitude)) Long:\(String(format: "%.4f", location.coordinate.longitude))"
     }
 
-    /// 生成紧急求救文本（含位置）
+    /// Generate emergency SOS text (including location).
     func emergencyMessage() async -> String {
         let locationStr = await formattedLocation()
         return """
-        🆘 紧急呼救
-        位置：\(locationStr)
-        时间：\(DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .medium))
-        请尽快联系！
+        🆘 SOS Emergency
+        Location: \(locationStr)
+        Time: \(DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .medium))
+        Please contact me ASAP!
         """
     }
 

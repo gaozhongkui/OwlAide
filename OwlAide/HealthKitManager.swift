@@ -2,20 +2,20 @@ import HealthKit
 import Foundation
 import Combine
 
-/// HealthKit 健康数据集成：血压、心率、步数
-/// 完全本地，免费，不需要服务器
+/// HealthKit integration: Blood pressure, heart rate, step count.
+/// Fully local, no server required.
 class HealthKitManager: ObservableObject {
     static let shared = HealthKitManager()
 
     private let store = HKHealthStore()
 
-    @Published var systolicBP: Double?       // 收缩压（高压）
-    @Published var diastolicBP: Double?      // 舒张压（低压）
-    @Published var heartRate: Double?        // 心率
-    @Published var stepCount: Int?           // 今日步数
+    @Published var systolicBP: Double?       // Systolic (High)
+    @Published var diastolicBP: Double?      // Diastolic (Low)
+    @Published var heartRate: Double?        // Heart Rate
+    @Published var stepCount: Int?           // Today's steps
     @Published var isAuthorized = false
 
-    // 需要读取的数据类型
+    // Data types to read
     private let readTypes: Set<HKObjectType> = [
         HKObjectType.quantityType(forIdentifier: .bloodPressureSystolic)!,
         HKObjectType.quantityType(forIdentifier: .bloodPressureDiastolic)!,
@@ -23,7 +23,7 @@ class HealthKitManager: ObservableObject {
         HKObjectType.quantityType(forIdentifier: .stepCount)!
     ]
 
-    // MARK: - 权限
+    // MARK: - Permissions
 
     func requestAuthorization() async {
         guard HKHealthStore.isHealthDataAvailable() else { return }
@@ -31,16 +31,16 @@ class HealthKitManager: ObservableObject {
         do {
             try await store.requestAuthorization(toShare: [], read: readTypes)
             await MainActor.run { isAuthorized = true }
-            // 授权后立即拉取数据
+            // Fetch data immediately after authorization
             await fetchLatestBloodPressure()
             await fetchHeartRate()
             await fetchStepCount()
         } catch {
-            print("HealthKit 授权失败: \(error.localizedDescription)")
+            print("HealthKit authorization failed: \(error.localizedDescription)")
         }
     }
 
-    // MARK: - 血压
+    // MARK: - Blood Pressure
 
     func fetchLatestBloodPressure() async {
         let systolicType = HKObjectType.quantityType(forIdentifier: .bloodPressureSystolic)!
@@ -55,7 +55,7 @@ class HealthKitManager: ObservableObject {
         }
     }
 
-    // MARK: - 心率
+    // MARK: - Heart Rate
 
     func fetchHeartRate() async {
         let hrType = HKObjectType.quantityType(forIdentifier: .heartRate)!
@@ -67,7 +67,7 @@ class HealthKitManager: ObservableObject {
         }
     }
 
-    // MARK: - 步数
+    // MARK: - Step Count
 
     func fetchStepCount() async {
         let stepType = HKObjectType.quantityType(forIdentifier: .stepCount)!
@@ -97,7 +97,7 @@ class HealthKitManager: ObservableObject {
         }
     }
 
-    // MARK: - 通用查询
+    // MARK: - Generic Query
 
     private func fetchLatestValue(for type: HKQuantityType, unit: HKUnit) async -> Double? {
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)

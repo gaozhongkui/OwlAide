@@ -18,9 +18,9 @@ struct PrepareView: View {
                 Text("\(record.department)")
                     .font(.system(size: 13))
                     .opacity(0.75)
-                Text("准备问诊")
+                Text("Prepare for Visit")
                     .font(.system(size: 20, weight: .bold))
-                Text("告诉医生您的情况")
+                Text("Tell the doctor about your condition")
                     .font(.system(size: 13))
                     .opacity(0.8)
             }
@@ -31,14 +31,14 @@ struct PrepareView: View {
 
             ScrollView {
                 VStack(spacing: 12) {
-                    // Step 1: 症状（接入系统语音识别）
-                    PrepStepCard(number: 1, title: "哪里不舒服？") {
+                    // Step 1: Symptoms (Speech Recognition)
+                    PrepStepCard(number: 1, title: "What's bothering you?") {
                         VStack(spacing: 12) {
-                            // 语音识别按钮 — 按住开始，松手停止
+                            // Voice Recognition Button — Hold to start, release to stop
                             Button(action: {}) {
                                 HStack {
                                     Image(systemName: isRecordingSymptom ? "waveform" : "mic.fill")
-                                    Text(isRecordingSymptom ? "正在听您说…" : "按住说话")
+                                    Text(isRecordingSymptom ? "Listening..." : "Hold to Speak")
                                 }
                                 .font(.system(size: 15, weight: .semibold))
                                 .foregroundColor(AppTheme.teal)
@@ -72,9 +72,9 @@ struct PrepareView: View {
                                     }
                             )
 
-                            // 实时识别结果显示
+                            // Real-time recognition result display
                             if isRecordingSymptom && !speechRecognizer.recognizedText.isEmpty {
-                                Text("识别中：" + speechRecognizer.recognizedText)
+                                Text("Recognizing: " + speechRecognizer.recognizedText)
                                     .font(.system(size: 13))
                                     .foregroundColor(.gray)
                                     .lineLimit(3)
@@ -93,15 +93,15 @@ struct PrepareView: View {
                         }
                     }
 
-                    // Step 2: 用药
-                    PrepStepCard(number: 2, title: "目前在吃的药") {
+                    // Step 2: Medication
+                    PrepStepCard(number: 2, title: "Current Medications") {
                         VStack(spacing: 0) {
                             ForEach(record.medications) { med in
                                 MedicationRow(name: med.name, dose: med.dose)
                             }
 
                             Button(action: { showCamera = true }) {
-                                Text("+ 拍药盒添加")
+                                Text("+ Scan Pill Box")
                                     .font(.system(size: 14))
                                     .foregroundColor(.gray)
                                     .frame(maxWidth: .infinity)
@@ -115,18 +115,18 @@ struct PrepareView: View {
                         }
                     }
 
-                    // Step 3: 问题（接入语音识别）
-                    PrepStepCard(number: 3, title: "想问医生的问题") {
+                    // Step 3: Questions (Speech Recognition)
+                    PrepStepCard(number: 3, title: "Questions for the Doctor") {
                         VStack(spacing: 0) {
                             ForEach(0..<record.questions.count, id: \.self) { index in
                                 QuestionRow(number: index + 1, text: record.questions[index])
                             }
 
-                            // 语音识别按钮 — 按住说话录入问题
+                            // Voice Recognition Button — Hold to record questions
                             Button(action: {}) {
                                 HStack {
                                     Image(systemName: isRecordingQuestion ? "waveform" : "mic.fill")
-                                    Text(isRecordingQuestion ? "正在听您说…" : "按住说出您的问题")
+                                    Text(isRecordingQuestion ? "Listening..." : "Hold to Ask Question")
                                 }
                                 .font(.system(size: 15, weight: .semibold))
                                 .foregroundColor(AppTheme.teal)
@@ -160,9 +160,9 @@ struct PrepareView: View {
                                     }
                             )
 
-                            // 实时识别结果显示
+                            // Real-time recognition result display
                             if isRecordingQuestion && !questionRecognizer.recognizedText.isEmpty {
-                                Text("识别中：" + questionRecognizer.recognizedText)
+                                Text("Recognizing: " + questionRecognizer.recognizedText)
                                     .font(.system(size: 13))
                                     .foregroundColor(.gray)
                                     .lineLimit(3)
@@ -177,7 +177,7 @@ struct PrepareView: View {
 
             // Bottom Action
             Button(action: onStartRecording) {
-                Text("准备好了，开始就诊 →")
+                Text("Ready, Start Visit →")
                     .font(.system(size: 17, weight: .bold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)

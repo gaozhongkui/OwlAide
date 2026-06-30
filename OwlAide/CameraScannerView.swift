@@ -6,7 +6,7 @@ struct CameraScannerView: UIViewControllerRepresentable {
     var onDetected: (String, String) -> Void
 
     func makeUIViewController(context: Context) -> DataScannerViewController {
-        // 创建扫描器：识别文字，禁用意标，允许高光显示识别区域
+        // Create scanner: recognize text, disable symbologies, enable highlighting
         let scanner = DataScannerViewController(
             recognizedDataTypes: [.text()],
             qualityLevel: .balanced,
@@ -19,7 +19,7 @@ struct CameraScannerView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {
-        // 启动扫描
+        // Start scanning
         try? uiViewController.startScanning()
     }
 
@@ -34,30 +34,29 @@ struct CameraScannerView: UIViewControllerRepresentable {
             self.parent = parent
         }
 
-        // 当扫描器点击识别出的文字项时触发（或者自动捕获）
+        // Triggered when user taps on a recognized item
         func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
             switch item {
             case .text(let text):
-                // 这里的文本就是识别出的药名
-                // 我们简单地取第一行作为药名，并模拟一个默认剂量
+                // Transcript is the recognized medication name
+                // Take the transcript as name and simulate a default dosage
                 let detectedName = text.transcript
-                parent.onDetected(detectedName, "识别自药盒照片")
+                parent.onDetected(detectedName, "Recognized from photo")
                 parent.dismiss()
             default:
                 break
             }
         }
 
-        // 如果你想实现“自动捕获”而不是点击捕获，可以使用 didAdd 并在里面逻辑判断
+        // Logic for automatic capture
         func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems: [RecognizedItem]) {
             if let firstItem = addedItems.first {
                 switch firstItem {
                 case .text(let text):
-                    // 为了防止误触，这里通常会加一些逻辑判断（比如文字长度或关键词）
-                    // 在此我们直接返回识别到的第一个长文字
+                    // Basic length check to avoid accidental triggers
                     if text.transcript.count > 3 {
                         DispatchQueue.main.async {
-                            self.parent.onDetected(text.transcript, "自动识别剂量")
+                            self.parent.onDetected(text.transcript, "Auto-detected dosage")
                             self.parent.dismiss()
                         }
                     }

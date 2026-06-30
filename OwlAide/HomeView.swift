@@ -3,7 +3,7 @@ import SwiftData
 import CloudKit
 import Foundation
 
-// MARK: - HomeView (主导航容器)
+// MARK: - HomeView (Main Navigation Container)
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \VisitRecord.date, order: .reverse) private var records: [VisitRecord]
@@ -45,10 +45,10 @@ struct HomeView: View {
 
             // Tab Bar
             HStack(spacing: 0) {
-                TabBarItem(icon: "house.fill", label: "首页", isActive: selectedTab == 0) { selectedTab = 0 }
-                TabBarItem(icon: "calendar", label: "就诊", isActive: selectedTab == 1) { selectedTab = 1 }
-                TabBarItem(icon: "pills.fill", label: "用药", isActive: selectedTab == 2) { selectedTab = 2 }
-                TabBarItem(icon: "person.2.fill", label: "家庭", isActive: selectedTab == 3) { selectedTab = 3 }
+                TabBarItem(icon: "house.fill", label: "Home", isActive: selectedTab == 0) { selectedTab = 0 }
+                TabBarItem(icon: "calendar", label: "Visits", isActive: selectedTab == 1) { selectedTab = 1 }
+                TabBarItem(icon: "pills.fill", label: "Meds", isActive: selectedTab == 2) { selectedTab = 2 }
+                TabBarItem(icon: "person.2.fill", label: "Family", isActive: selectedTab == 3) { selectedTab = 3 }
             }
             .padding(.top, 10)
             .padding(.bottom, 24)
@@ -85,7 +85,7 @@ struct HomeView: View {
     }
 
     private func shareViaText(_ record: VisitRecord) {
-        let text = "【OwlAide 就诊报告】\n科室：\(record.department)\n建议：\(record.doctorAdvice)\n详细内容已同步至 OwlAide 家庭分享。"
+        let text = "[OwlAide Visit Report]\nDepartment: \(record.department)\nAdvice: \(record.doctorAdvice)\nDetails synced to OwlAide Family Share."
         let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let rootVC = windowScene.windows.first?.rootViewController {
@@ -94,7 +94,7 @@ struct HomeView: View {
     }
 }
 
-// MARK: - MainDashboardView (首页仪表盘)
+// MARK: - MainDashboardView (Dashboard)
 struct MainDashboardView: View {
     let records: [VisitRecord]
     let familyMembers: [FamilyMember]
@@ -117,8 +117,8 @@ struct MainDashboardView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("早上好").font(AppTheme.captionFont).opacity(0.85)
-                            Text(settings.userName.isEmpty ? "您好" : settings.userName)
+                            Text("Good Morning").font(AppTheme.captionFont).opacity(0.85)
+                            Text(settings.userName.isEmpty ? "Hello" : settings.userName)
                                 .font(AppTheme.titleFont)
                         }
                         Spacer()
@@ -131,11 +131,11 @@ struct MainDashboardView: View {
                             Button(action: {
                                 Task {
                                     let msg = await LocationService.shared.emergencyMessage()
-                                    // 先拨打电话
+                                    // Call first
                                     if let url = URL(string: "tel://\(emergencyContact.phoneNumber)") {
                                         await MainActor.run { UIApplication.shared.open(url) }
                                     }
-                                    // 准备含位置的求救短信
+                                    // Prepare SOS message with location
                                     await MainActor.run {
                                         let av = UIActivityViewController(activityItems: [msg], applicationActivities: nil)
                                         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -144,12 +144,12 @@ struct MainDashboardView: View {
                                         }
                                     }
                                 }
-                                TTSService.shared.speak("正在呼叫紧急联系人并发送位置信息")
+                                TTSService.shared.speak("Calling emergency contact and sending location")
                             }) {
                                 VStack(spacing: 4) {
                                     Image(systemName: "phone.fill.badge.plus")
                                         .font(.system(size: 20))
-                                    Text("一键呼救").font(AppTheme.captionFont)
+                                    Text("SOS").font(AppTheme.captionFont)
                                 }
                                 .foregroundColor(.white)
                                 .padding(10)
@@ -158,7 +158,7 @@ struct MainDashboardView: View {
                             }
                         }
                     }
-                    Text("今天是 \(formattedToday())").font(AppTheme.captionFont).opacity(0.75)
+                    Text("Today is \(formattedToday())").font(AppTheme.captionFont).opacity(0.75)
                 }
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -171,37 +171,37 @@ struct MainDashboardView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
-                        // 健康数据卡片（HealthKit）
+                        // Health Data Card (HealthKit)
                         if healthKit.isAuthorized {
                             HealthDataCard(healthKit: healthKit)
                         }
 
                         NextVisitCard(onPrepare: onPrepareClick)
 
-                        Text("快捷功能")
+                        Text("Quick Actions")
                             .font(AppTheme.bodyFont)
                             .foregroundColor(.gray)
 
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                            QuickCard(icon: "mic.fill", iconColor: AppTheme.teal, bgColor: AppTheme.tealLight, title: "开始录音", desc: "就诊时使用", action: {
-                                TTSService.shared.speak("开始录音")
+                            QuickCard(icon: "mic.fill", iconColor: AppTheme.teal, bgColor: AppTheme.tealLight, title: "Record", desc: "Use during visit", action: {
+                                TTSService.shared.speak("Starting recording")
                                 onRecordClick()
                             })
-                            QuickCard(icon: "clipboard.fill", iconColor: AppTheme.warm, bgColor: AppTheme.warmLight, title: "准备问诊", desc: "记录症状问题", action: {
-                                TTSService.shared.speak("准备问诊")
+                            QuickCard(icon: "clipboard.fill", iconColor: AppTheme.warm, bgColor: AppTheme.warmLight, title: "Prepare", desc: "Note symptoms", action: {
+                                TTSService.shared.speak("Preparing for visit")
                                 onPrepareClick()
                             })
-                            QuickCard(icon: "doc.text.fill", iconColor: AppTheme.purple, bgColor: AppTheme.purpleLight, title: "上次摘要", desc: records.first?.department ?? "无记录", action: {
+                            QuickCard(icon: "doc.text.fill", iconColor: AppTheme.purple, bgColor: AppTheme.purpleLight, title: "Last Summary", desc: records.first?.department ?? "No records", action: {
                                 if let last = records.first {
-                                    TTSService.shared.speak("查看就诊摘要")
+                                    TTSService.shared.speak("Viewing visit summary")
                                     onSummaryViewClick(last)
                                 }
                             })
-                            QuickCard(icon: "icloud.fill", iconColor: AppTheme.orange, bgColor: AppTheme.orangeLight, title: "发给子女", desc: familyMembers.isEmpty ? "点击添加家人" : "用 iCloud 分享报告", action: {
+                            QuickCard(icon: "icloud.fill", iconColor: AppTheme.orange, bgColor: AppTheme.orangeLight, title: "Share", desc: familyMembers.isEmpty ? "Add family" : "Share via iCloud", action: {
                                 if familyMembers.isEmpty {
                                     onFamilyTabClick()
                                 } else if let last = records.first {
-                                    TTSService.shared.speak("正在分享报告给家人")
+                                    TTSService.shared.speak("Sharing report with family")
                                     onShareRecord(last)
                                 } else {
                                     onFamilyTabClick()
@@ -211,18 +211,18 @@ struct MainDashboardView: View {
 
                         if !familyMembers.isEmpty {
                             VStack(alignment: .leading, spacing: 10) {
-                                Text("家人动态")
+                                Text("Family Activity")
                                     .font(AppTheme.bodyFont)
                                     .foregroundColor(.gray)
 
                                 HStack {
                                     Image(systemName: "checkmark.shield.fill")
                                         .foregroundColor(AppTheme.teal)
-                                    Text("通过 iCloud 安全分享，家人用自己的 Apple ID 查看")
+                                    Text("Secure sharing via iCloud. Family members view with their own Apple ID.")
                                         .font(AppTheme.captionFont)
                                         .foregroundColor(.gray)
                                     Spacer()
-                                    Button("查看") { onFamilyTabClick() }
+                                    Button("View") { onFamilyTabClick() }
                                         .font(AppTheme.buttonFont)
                                         .foregroundColor(AppTheme.teal)
                                 }
@@ -232,12 +232,12 @@ struct MainDashboardView: View {
                             }
                         }
 
-                        Text("就诊历史")
+                        Text("History")
                             .font(AppTheme.bodyFont)
                             .foregroundColor(.gray)
 
                         if records.isEmpty {
-                            Text("暂无记录").font(AppTheme.bodyFont).foregroundColor(.gray).padding()
+                            Text("No records").font(AppTheme.bodyFont).foregroundColor(.gray).padding()
                         } else {
                             ForEach(records) { record in
                                 HistoryItem(date: "\(formatDate(record.date))", title: record.hospital, isActive: record == records.first)
@@ -253,7 +253,7 @@ struct MainDashboardView: View {
             SettingsView()
         }
         .task {
-            // 拉取最新健康数据
+            // Fetch latest health data
             if healthKit.isAuthorized {
                 await healthKit.fetchLatestBloodPressure()
                 await healthKit.fetchHeartRate()
@@ -264,19 +264,19 @@ struct MainDashboardView: View {
 
     private func formattedToday() -> String {
         let f = DateFormatter()
-        f.locale = Locale(identifier: "zh_CN")
-        f.dateFormat = "M月d日 EEEE"
+        f.locale = Locale(identifier: "en_US")
+        f.dateFormat = "MMMM d, EEEE"
         return f.string(from: Date())
     }
 
     private func formatDate(_ date: Date) -> String {
         let f = DateFormatter()
-        f.dateFormat = "yyyy年M月d日"
+        f.dateFormat = "MMM d, yyyy"
         return f.string(from: date)
     }
 }
 
-// MARK: - 健康数据卡片
+// MARK: - Health Data Card
 
 struct HealthDataCard: View {
     @ObservedObject var healthKit: HealthKitManager
@@ -284,41 +284,41 @@ struct HealthDataCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("健康数据").font(AppTheme.captionFont).foregroundColor(AppTheme.teal)
+                Text("Health Data").font(AppTheme.captionFont).foregroundColor(AppTheme.teal)
                 Spacer()
                 Image(systemName: "heart.fill").font(.system(size: 14)).foregroundColor(AppTheme.warm)
             }
 
             HStack(spacing: 20) {
-                // 血压
+                // Blood Pressure
                 HealthDataItem(
                     icon: "drop.fill",
                     color: AppTheme.warm,
-                    label: "血压",
+                    label: "BP",
                     value: bloodPressureText,
                     unit: "mmHg"
                 )
 
                 Divider().frame(height: 40)
 
-                // 心率
+                // Heart Rate
                 HealthDataItem(
                     icon: "heart.fill",
                     color: .red,
-                    label: "心率",
+                    label: "HR",
                     value: heartRateText,
-                    unit: "次/分"
+                    unit: "bpm"
                 )
 
                 Divider().frame(height: 40)
 
-                // 步数
+                // Steps
                 HealthDataItem(
                     icon: "figure.walk",
                     color: AppTheme.teal,
-                    label: "步数",
+                    label: "Steps",
                     value: stepCountText,
-                    unit: "步"
+                    unit: "steps"
                 )
             }
         }

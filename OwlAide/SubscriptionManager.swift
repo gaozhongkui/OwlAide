@@ -1,9 +1,9 @@
 import StoreKit
 import Combine
 
-/// StoreKit 2 订阅管理 — 一次性买断
-/// 产品 ID 需在 App Store Connect 中配置：
-///   - com.owl.aide.pro.lifetime（一次性 $2.99）
+/// StoreKit 2 Subscription Management — One-time Purchase
+/// Product ID needs to be configured in App Store Connect:
+///   - com.owl.aide.pro.lifetime (One-time $2.99)
 class SubscriptionManager: ObservableObject {
     static let shared = SubscriptionManager()
 
@@ -24,7 +24,7 @@ class SubscriptionManager: ObservableObject {
 
     deinit { updatesTask?.cancel() }
 
-    // MARK: - 拉取产品
+    // MARK: - Fetch Products
 
     func loadProducts() async {
         await MainActor.run { isLoading = true }
@@ -34,11 +34,11 @@ class SubscriptionManager: ObservableObject {
             let products = try await Product.products(for: ["com.owl.aide.pro.lifetime"])
             await MainActor.run { product = products.first }
         } catch {
-            await MainActor.run { purchaseError = "加载产品失败" }
+            await MainActor.run { purchaseError = "Failed to load products" }
         }
     }
 
-    // MARK: - 购买
+    // MARK: - Purchase
 
     func purchase() async {
         guard let product = product else { return }
@@ -53,7 +53,7 @@ class SubscriptionManager: ObservableObject {
             case .userCancelled:
                 break
             case .pending:
-                await MainActor.run { purchaseError = "购买处理中，请稍候" }
+                await MainActor.run { purchaseError = "Purchase pending, please wait" }
             @unknown default:
                 break
             }
@@ -62,7 +62,7 @@ class SubscriptionManager: ObservableObject {
         }
     }
 
-    // MARK: - 验证
+    // MARK: - Validation
 
     func checkPurchaseStatus() async {
         for await result in Transaction.currentEntitlements {
@@ -83,7 +83,7 @@ class SubscriptionManager: ObservableObject {
         await checkPurchaseStatus()
     }
 
-    // MARK: - 内部
+    // MARK: - Internal
 
     private func handleTransaction(_ result: VerificationResult<Transaction>) async {
         if case .verified(let transaction) = result {

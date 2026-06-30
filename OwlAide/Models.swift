@@ -2,10 +2,10 @@ import Foundation
 import SwiftData
 
 enum FamilyRole: String, Codable, CaseIterable {
-    case caregiver = "主照顾者"
-    case child = "子女"
-    case spouse = "配偶"
-    case other = "其他"
+    case caregiver = "Primary Caregiver"
+    case child = "Child"
+    case spouse = "Spouse"
+    case other = "Other"
 }
 
 @Model
@@ -38,17 +38,17 @@ class VisitRecord {
     var department: String = ""
     var hospital: String = ""
 
-    // 准备阶段数据
+    // Preparation Phase Data
     var symptoms: [String] = []
     @Relationship(deleteRule: .cascade) var medications: [Medication] = []
     var questions: [String] = []
 
-    // 录音与摘要
+    // Recording & Summary
     var audioPath: String?
     var aiSummary: String?
     var doctorAdvice: String = ""
 
-    // 共享状态
+    // Shared Status
     var isSharedWithFamily: Bool = true
 
     init(department: String, hospital: String) {
@@ -57,7 +57,7 @@ class VisitRecord {
     }
 }
 
-// MARK: - VisitRecord ↔ JSON 序列化（用于 CloudKit 传输）
+// MARK: - VisitRecord ↔ JSON Serialization (for CloudKit transfer)
 
 extension VisitRecord {
     func toJSON() -> String {
@@ -92,13 +92,13 @@ extension VisitRecord {
         record.aiSummary = dto.aiSummary
         record.doctorAdvice = dto.doctorAdvice
         record.isSharedWithFamily = dto.isSharedWithFamily
-        // 还原用药信息（创建临时 Medication 对象用于展示）
+        // Restore medication info (create temporary Medication objects for display)
         record.medications = dto.medications.map { Medication(name: $0.name, dose: $0.dose) }
         return record
     }
 }
 
-// MARK: - 可序列化的 DTO
+// MARK: - Serializable DTOs
 
 private struct VisitRecordDTO: Codable {
     let id: UUID
@@ -119,7 +119,7 @@ private struct MedicationDTO: Codable {
     let dose: String
 }
 
-// MARK: - 原数据模型
+// MARK: - Original Data Model
 
 @Model
 class Medication {

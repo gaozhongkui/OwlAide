@@ -1,47 +1,47 @@
 import SwiftUI
 import Combine
 
-/// 全局适老化配置：字号、长者模式、高对比度
-/// 通过 @AppStorage 持久化，App 重启后保持用户偏好
+/// Global accessibility configuration: font size, elder mode, high contrast.
+/// Persisted via @AppStorage to maintain user preferences after restart.
 class AppSettings: ObservableObject {
     static let shared = AppSettings()
 
-    /// 长者模式：默认开启，适合 60+ 用户
+    /// Elder Mode: Enabled by default, suitable for 60+ users.
     @AppStorage("isElderMode") var isElderMode: Bool = true
 
-    /// 字号缩放比例：1.0=正常, 1.5=大号（默认）, 2.0=超大
+    /// Font scaling: 1.0=Normal, 1.5=Large (Default), 2.0=Extra Large
     @AppStorage("fontScale") var fontScale: Double = 1.5
 
-    /// 用户姓名
+    /// User's Name
     @AppStorage("userName") var userName: String = ""
 
-    /// 高对比度模式
+    /// High Contrast Mode
     @AppStorage("highContrast") var highContrast: Bool = false
 
-    /// 远程 LLM 配置
+    /// Remote LLM Config
     @AppStorage("llm_base_url") var llmBaseURL: String = ""
     @AppStorage("llm_api_key") var llmApiKey: String = ""
     @AppStorage("llm_model") var llmModel: String = "gpt-4o"
 
-    // MARK: - 动态字号
+    // MARK: - Dynamic Font Sizes
 
     func fontSize(_ base: CGFloat, weight: Font.Weight = .regular) -> Font {
         .system(size: base * fontScale, weight: weight)
     }
 
-    /// 标题字号（原 20pt → 长者模式 30pt）
+    /// Title Font (Orig 20pt → Elder Mode 30pt)
     var titleFont: Font { fontSize(isElderMode ? 20 : 18, weight: .bold) }
 
-    /// 正文字号（原 14pt → 长者模式 21pt）
+    /// Body Font (Orig 14pt → Elder Mode 21pt)
     var bodyFont: Font { fontSize(isElderMode ? 14 : 13, weight: .regular) }
 
-    /// 小字（原 11pt → 长者模式 16pt）
+    /// Caption Font (Orig 11pt → Elder Mode 16pt)
     var captionFont: Font { fontSize(isElderMode ? 11 : 10, weight: .regular) }
 
-    /// 按钮字号
+    /// Button Font
     var buttonFont: Font { fontSize(isElderMode ? 15 : 14, weight: .semibold) }
 
-    // MARK: - 高对比度配色
+    // MARK: - High Contrast Colors
 
     var tealColor: Color {
         highContrast ? Color(hex: "00695C") : AppTheme.teal

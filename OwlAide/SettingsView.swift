@@ -7,38 +7,38 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                // MARK: 个人信息
-                Section(header: Text("个人信息")) {
-                    TextField("您的姓名", text: $settings.userName)
+                // MARK: Personal Info
+                Section(header: Text("Personal Information")) {
+                    TextField("Your Name", text: $settings.userName)
                         .font(AppTheme.bodyFont)
                 }
 
-                // MARK: 适老化设置
-                Section(header: Text("适老化设置"), footer: Text("长者模式下字体会变大，并启用语音反馈。")) {
-                    Toggle("长者模式", isOn: $settings.isElderMode)
+                // MARK: Accessibility
+                Section(header: Text("Accessibility"), footer: Text("Elder Mode increases font size and enables voice feedback.")) {
+                    Toggle("Elder Mode", isOn: $settings.isElderMode)
                         .tint(AppTheme.teal)
                         .font(AppTheme.bodyFont)
 
                     if settings.isElderMode {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("字号大小：\(String(format: "%.1f", settings.fontScale))x")
+                            Text("Font Scale: \(String(format: "%.1f", settings.fontScale))x")
                                 .font(AppTheme.captionFont)
                             Slider(value: $settings.fontScale, in: 1.0...2.5, step: 0.1)
                                 .tint(AppTheme.teal)
                         }
                     }
 
-                    Toggle("高对比度", isOn: $settings.highContrast)
+                    Toggle("High Contrast", isOn: $settings.highContrast)
                         .tint(AppTheme.teal)
                         .font(AppTheme.bodyFont)
                 }
 
-                // MARK: AI 摘要配置
+                // MARK: AI Summary Config
                 Section(
-                    header: Text("AI 摘要（可选）"),
-                    footer: Text("配置 OpenAI 兼容 API 后，就诊录音会自动生成更精准的结构化摘要。不配置则使用本地分析。")
+                    header: Text("AI Summary (Optional)"),
+                    footer: Text("Configure an OpenAI-compatible API for more accurate visit summaries. Local analysis is used otherwise.")
                 ) {
-                    TextField("API 地址 (如 https://api.openai.com/v1)", text: $settings.llmBaseURL)
+                    TextField("API Base URL (e.g., https://api.openai.com/v1)", text: $settings.llmBaseURL)
                         .font(AppTheme.captionFont)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
@@ -48,13 +48,13 @@ struct SettingsView: View {
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
 
-                    TextField("模型名称", text: $settings.llmModel)
+                    TextField("Model Name", text: $settings.llmModel)
                         .font(AppTheme.captionFont)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                 }
 
-                // MARK: 订阅
+                // MARK: Subscription
                 Section(header: Text("OwlAide Pro")) {
                     NavigationLink {
                         SubscriptionView()
@@ -62,11 +62,11 @@ struct SettingsView: View {
                         HStack {
                             Image(systemName: "crown.fill")
                                 .foregroundColor(AppTheme.orange)
-                            Text("管理订阅")
+                            Text("Manage Subscription")
                                 .font(AppTheme.bodyFont)
                             Spacer()
                             if SubscriptionManager.shared.isPurchased {
-                                Text("已解锁")
+                                Text("Unlocked")
                                     .font(AppTheme.captionFont)
                                     .foregroundColor(AppTheme.teal)
                             }
@@ -74,26 +74,26 @@ struct SettingsView: View {
                     }
                 }
 
-                // MARK: 关于
-                Section(header: Text("关于")) {
+                // MARK: About
+                Section(header: Text("About")) {
                     HStack {
-                        Text("版本")
+                        Text("Version")
                         Spacer()
                         Text("1.0")
                             .foregroundColor(.gray)
                     }
                     .font(AppTheme.bodyFont)
 
-                    Text("OwlAide 是一款专注老年人就诊辅助的 App。\n所有数据通过 iCloud 加密同步，不经过第三方服务器。")
+                    Text("OwlAide is an assistant app for senior healthcare visits.\nAll data is encrypted and synced via iCloud; no third-party servers involved.")
                         .font(AppTheme.captionFont)
                         .foregroundColor(.gray)
                 }
             }
-            .navigationTitle("设置")
+            .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("完成") { dismiss() }
+                    Button("Done") { dismiss() }
                         .font(AppTheme.buttonFont)
                 }
             }
