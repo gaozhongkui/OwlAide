@@ -9,7 +9,7 @@ struct SettingsView: View {
             Form {
                 // MARK: Personal Info
                 Section(header: Text("Personal Information")) {
-                    TextField("Your Name", text: $settings.userName)
+                    TextField(String(localized: "Your Name"), text: $settings.userName)
                         .font(AppTheme.bodyFont)
                 }
 
@@ -21,7 +21,7 @@ struct SettingsView: View {
 
                     if settings.isElderMode {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Font Scale: \(String(format: "%.1f", settings.fontScale))x")
+                            Text("\(String(localized: "Font Scale")): \(String(format: "%.1f", settings.fontScale))x")
                                 .font(AppTheme.captionFont)
                             Slider(value: $settings.fontScale, in: 1.0...2.5, step: 0.1)
                                 .tint(AppTheme.teal)
@@ -38,17 +38,17 @@ struct SettingsView: View {
                     header: Text("AI Summary (Optional)"),
                     footer: Text("Configure an OpenAI-compatible API for more accurate visit summaries. Local analysis is used otherwise.")
                 ) {
-                    TextField("API Base URL (e.g., https://api.openai.com/v1)", text: $settings.llmBaseURL)
+                    TextField(String(localized: "API Base URL (e.g., https://api.openai.com/v1)"), text: $settings.llmBaseURL)
                         .font(AppTheme.captionFont)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
 
-                    SecureField("API Key", text: $settings.llmApiKey)
+                    SecureField(String(localized: "API Key"), text: $settings.llmApiKey)
                         .font(AppTheme.captionFont)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
 
-                    TextField("Model Name", text: $settings.llmModel)
+                    TextField(String(localized: "Model Name"), text: $settings.llmModel)
                         .font(AppTheme.captionFont)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
@@ -99,8 +99,4 @@ struct SettingsView: View {
             }
         }
     }
-}
-
-#Preview {
-    SettingsView()
 }

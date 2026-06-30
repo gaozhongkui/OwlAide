@@ -31,8 +31,8 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         // Request permission if not determined.
         if status == .notDetermined {
             manager.requestWhenInUseAuthorization()
-            // Wait for permission callback, max 5 seconds.
-            try? await Task.sleep(nanoseconds: 5_000_000_000)
+            // Wait for permission callback
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
             if manager.authorizationStatus != .authorizedWhenInUse && manager.authorizationStatus != .authorizedAlways {
                 return nil
             }
@@ -47,20 +47,27 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     /// Format as a readable coordinate string.
     func formattedLocation() async -> String {
         guard let location = await requestCurrentLocation() else {
-            return "Failed to get location"
+            return String(localized: "Failed to get location")
         }
         lastLocation = location
-        return "Lat:\(String(format: "%.4f", location.coordinate.latitude)) Long:\(String(format: "%.4f", location.coordinate.longitude))"
+        return "\(String(localized: "Lat")):\(String(format: "%.4f", location.coordinate.latitude)) \(String(localized: "Long")):\(String(format: "%.4f", location.coordinate.longitude))"
     }
 
     /// Generate emergency SOS text (including location).
     func emergencyMessage() async -> String {
         let locationStr = await formattedLocation()
+        let title = String(localized: "🆘 SOS Emergency")
+        let locLabel = String(localized: "Location")
+        let timeLabel = String(localized: "Time")
+        let body = String(localized: "Please contact me ASAP!")
+
+        let timeStr = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .medium)
+
         return """
-        🆘 SOS Emergency
-        Location: \(locationStr)
-        Time: \(DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .medium))
-        Please contact me ASAP!
+        \(title)
+        \(locLabel): \(locationStr)
+        \(timeLabel): \(timeStr)
+        \(body)
         """
     }
 

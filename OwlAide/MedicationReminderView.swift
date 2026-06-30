@@ -98,7 +98,7 @@ struct MedicationReminderRow: View {
                     withAnimation {
                         med.isTakenToday = true
                     }
-                    TTSService.shared.speak("Confirmed taking \(med.name)")
+                    TTSService.shared.speak(String(localized: "Confirmed taking \(med.name)"))
                     // Cancel reminder
                     NotificationManager.shared.cancelMedicationReminder(medicationName: med.name)
                 }) {

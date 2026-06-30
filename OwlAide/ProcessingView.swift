@@ -40,7 +40,3 @@ struct ProcessingView: View {
         .background(Color.white)
     }
 }
-
-#Preview {
-    ProcessingView()
-}

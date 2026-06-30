@@ -15,7 +15,7 @@ struct PrepareView: View {
         VStack(spacing: 0) {
             // Header
             VStack(alignment: .leading, spacing: 4) {
-                Text("\(record.department)")
+                Text(record.department)
                     .font(.system(size: 13))
                     .opacity(0.75)
                 Text("Prepare for Visit")
@@ -31,10 +31,9 @@ struct PrepareView: View {
 
             ScrollView {
                 VStack(spacing: 12) {
-                    // Step 1: Symptoms (Speech Recognition)
-                    PrepStepCard(number: 1, title: "What's bothering you?") {
+                    // Step 1: Symptoms
+                    PrepStepCard(number: 1, title: String(localized: "What's bothering you?")) {
                         VStack(spacing: 12) {
-                            // Voice Recognition Button — Hold to start, release to stop
                             Button(action: {}) {
                                 HStack {
                                     Image(systemName: isRecordingSymptom ? "waveform" : "mic.fill")
@@ -72,9 +71,8 @@ struct PrepareView: View {
                                     }
                             )
 
-                            // Real-time recognition result display
                             if isRecordingSymptom && !speechRecognizer.recognizedText.isEmpty {
-                                Text("Recognizing: " + speechRecognizer.recognizedText)
+                                Text("\(String(localized: "Recognizing")): \(speechRecognizer.recognizedText)")
                                     .font(.system(size: 13))
                                     .foregroundColor(.gray)
                                     .lineLimit(3)
@@ -94,14 +92,14 @@ struct PrepareView: View {
                     }
 
                     // Step 2: Medication
-                    PrepStepCard(number: 2, title: "Current Medications") {
+                    PrepStepCard(number: 2, title: String(localized: "Current Medications")) {
                         VStack(spacing: 0) {
                             ForEach(record.medications) { med in
                                 MedicationRow(name: med.name, dose: med.dose)
                             }
 
                             Button(action: { showCamera = true }) {
-                                Text("+ Scan Pill Box")
+                                Text("+ \(String(localized: "Scan Pill Box"))")
                                     .font(.system(size: 14))
                                     .foregroundColor(.gray)
                                     .frame(maxWidth: .infinity)
@@ -115,14 +113,13 @@ struct PrepareView: View {
                         }
                     }
 
-                    // Step 3: Questions (Speech Recognition)
-                    PrepStepCard(number: 3, title: "Questions for the Doctor") {
+                    // Step 3: Questions
+                    PrepStepCard(number: 3, title: String(localized: "Questions for the Doctor")) {
                         VStack(spacing: 0) {
                             ForEach(0..<record.questions.count, id: \.self) { index in
                                 QuestionRow(number: index + 1, text: record.questions[index])
                             }
 
-                            // Voice Recognition Button — Hold to record questions
                             Button(action: {}) {
                                 HStack {
                                     Image(systemName: isRecordingQuestion ? "waveform" : "mic.fill")
@@ -160,9 +157,8 @@ struct PrepareView: View {
                                     }
                             )
 
-                            // Real-time recognition result display
                             if isRecordingQuestion && !questionRecognizer.recognizedText.isEmpty {
-                                Text("Recognizing: " + questionRecognizer.recognizedText)
+                                Text("\(String(localized: "Recognizing")): \(questionRecognizer.recognizedText)")
                                     .font(.system(size: 13))
                                     .foregroundColor(.gray)
                                     .lineLimit(3)

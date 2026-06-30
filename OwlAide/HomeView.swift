@@ -45,10 +45,10 @@ struct HomeView: View {
 
             // Tab Bar
             HStack(spacing: 0) {
-                TabBarItem(icon: "house.fill", label: "Home", isActive: selectedTab == 0) { selectedTab = 0 }
-                TabBarItem(icon: "calendar", label: "Visits", isActive: selectedTab == 1) { selectedTab = 1 }
-                TabBarItem(icon: "pills.fill", label: "Meds", isActive: selectedTab == 2) { selectedTab = 2 }
-                TabBarItem(icon: "person.2.fill", label: "Family", isActive: selectedTab == 3) { selectedTab = 3 }
+                TabBarItem(icon: "house.fill", label: String(localized: "Home"), isActive: selectedTab == 0) { selectedTab = 0 }
+                TabBarItem(icon: "calendar", label: String(localized: "Visits"), isActive: selectedTab == 1) { selectedTab = 1 }
+                TabBarItem(icon: "pills.fill", label: String(localized: "Meds"), isActive: selectedTab == 2) { selectedTab = 2 }
+                TabBarItem(icon: "person.2.fill", label: String(localized: "Family"), isActive: selectedTab == 3) { selectedTab = 3 }
             }
             .padding(.top, 10)
             .padding(.bottom, 24)
@@ -68,7 +68,6 @@ struct HomeView: View {
     }
 
     private func shareViaCloudKit(_ record: VisitRecord) {
-        let emails = familyMembers.compactMap { $0.email.isEmpty ? nil : $0.email }
         Task {
             do {
                 let share = try await CloudKitService.shared.shareRecord(record)
@@ -85,7 +84,12 @@ struct HomeView: View {
     }
 
     private func shareViaText(_ record: VisitRecord) {
-        let text = "[OwlAide Visit Report]\nDepartment: \(record.department)\nAdvice: \(record.doctorAdvice)\nDetails synced to OwlAide Family Share."
+        let title = String(localized: "[OwlAide Visit Report]")
+        let deptLabel = String(localized: "Department")
+        let adviceLabel = String(localized: "Advice")
+        let footer = String(localized: "Details synced to OwlAide Family Share.")
+
+        let text = "\(title)\n\(deptLabel): \(record.department)\n\(adviceLabel): \(record.doctorAdvice)\n\(footer)"
         let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let rootVC = windowScene.windows.first?.rootViewController {
@@ -118,7 +122,7 @@ struct MainDashboardView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Good Morning").font(AppTheme.captionFont).opacity(0.85)
-                            Text(settings.userName.isEmpty ? "Hello" : settings.userName)
+                            Text(settings.userName.isEmpty ? String(localized: "Hello") : settings.userName)
                                 .font(AppTheme.titleFont)
                         }
                         Spacer()
@@ -131,11 +135,9 @@ struct MainDashboardView: View {
                             Button(action: {
                                 Task {
                                     let msg = await LocationService.shared.emergencyMessage()
-                                    // Call first
                                     if let url = URL(string: "tel://\(emergencyContact.phoneNumber)") {
                                         await MainActor.run { UIApplication.shared.open(url) }
                                     }
-                                    // Prepare SOS message with location
                                     await MainActor.run {
                                         let av = UIActivityViewController(activityItems: [msg], applicationActivities: nil)
                                         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -144,7 +146,7 @@ struct MainDashboardView: View {
                                         }
                                     }
                                 }
-                                TTSService.shared.speak("Calling emergency contact and sending location")
+                                TTSService.shared.speak(String(localized: "Calling emergency contact and sending location"))
                             }) {
                                 VStack(spacing: 4) {
                                     Image(systemName: "phone.fill.badge.plus")
@@ -171,7 +173,6 @@ struct MainDashboardView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
-                        // Health Data Card (HealthKit)
                         if healthKit.isAuthorized {
                             HealthDataCard(healthKit: healthKit)
                         }
@@ -183,25 +184,25 @@ struct MainDashboardView: View {
                             .foregroundColor(.gray)
 
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                            QuickCard(icon: "mic.fill", iconColor: AppTheme.teal, bgColor: AppTheme.tealLight, title: "Record", desc: "Use during visit", action: {
-                                TTSService.shared.speak("Starting recording")
+                            QuickCard(icon: "mic.fill", iconColor: AppTheme.teal, bgColor: AppTheme.tealLight, title: String(localized: "Record"), desc: String(localized: "Use during visit"), action: {
+                                TTSService.shared.speak(String(localized: "Starting recording"))
                                 onRecordClick()
                             })
-                            QuickCard(icon: "clipboard.fill", iconColor: AppTheme.warm, bgColor: AppTheme.warmLight, title: "Prepare", desc: "Note symptoms", action: {
-                                TTSService.shared.speak("Preparing for visit")
+                            QuickCard(icon: "clipboard.fill", iconColor: AppTheme.warm, bgColor: AppTheme.warmLight, title: String(localized: "Prepare"), desc: String(localized: "Note symptoms"), action: {
+                                TTSService.shared.speak(String(localized: "Preparing for visit"))
                                 onPrepareClick()
                             })
-                            QuickCard(icon: "doc.text.fill", iconColor: AppTheme.purple, bgColor: AppTheme.purpleLight, title: "Last Summary", desc: records.first?.department ?? "No records", action: {
+                            QuickCard(icon: "doc.text.fill", iconColor: AppTheme.purple, bgColor: AppTheme.purpleLight, title: String(localized: "Last Summary"), desc: records.first?.department ?? String(localized: "No records"), action: {
                                 if let last = records.first {
-                                    TTSService.shared.speak("Viewing visit summary")
+                                    TTSService.shared.speak(String(localized: "Viewing visit summary"))
                                     onSummaryViewClick(last)
                                 }
                             })
-                            QuickCard(icon: "icloud.fill", iconColor: AppTheme.orange, bgColor: AppTheme.orangeLight, title: "Share", desc: familyMembers.isEmpty ? "Add family" : "Share via iCloud", action: {
+                            QuickCard(icon: "icloud.fill", iconColor: AppTheme.orange, bgColor: AppTheme.orangeLight, title: String(localized: "Share"), desc: familyMembers.isEmpty ? String(localized: "Add family") : String(localized: "Share via iCloud"), action: {
                                 if familyMembers.isEmpty {
                                     onFamilyTabClick()
                                 } else if let last = records.first {
-                                    TTSService.shared.speak("Sharing report with family")
+                                    TTSService.shared.speak(String(localized: "Sharing report with family"))
                                     onShareRecord(last)
                                 } else {
                                     onFamilyTabClick()
@@ -222,7 +223,7 @@ struct MainDashboardView: View {
                                         .font(AppTheme.captionFont)
                                         .foregroundColor(.gray)
                                     Spacer()
-                                    Button("View") { onFamilyTabClick() }
+                                    Button(String(localized: "View")) { onFamilyTabClick() }
                                         .font(AppTheme.buttonFont)
                                         .foregroundColor(AppTheme.teal)
                                 }
@@ -253,7 +254,6 @@ struct MainDashboardView: View {
             SettingsView()
         }
         .task {
-            // Fetch latest health data
             if healthKit.isAuthorized {
                 await healthKit.fetchLatestBloodPressure()
                 await healthKit.fetchHeartRate()
@@ -264,14 +264,14 @@ struct MainDashboardView: View {
 
     private func formattedToday() -> String {
         let f = DateFormatter()
-        f.locale = Locale(identifier: "en_US")
-        f.dateFormat = "MMMM d, EEEE"
+        f.locale = Locale.current
+        f.setLocalizedDateFormatFromTemplate("MMMMdEEEE")
         return f.string(from: Date())
     }
 
     private func formatDate(_ date: Date) -> String {
         let f = DateFormatter()
-        f.dateFormat = "MMM d, yyyy"
+        f.dateStyle = .medium
         return f.string(from: date)
     }
 }
@@ -290,35 +290,32 @@ struct HealthDataCard: View {
             }
 
             HStack(spacing: 20) {
-                // Blood Pressure
                 HealthDataItem(
                     icon: "drop.fill",
                     color: AppTheme.warm,
-                    label: "BP",
+                    label: String(localized: "BP"),
                     value: bloodPressureText,
                     unit: "mmHg"
                 )
 
                 Divider().frame(height: 40)
 
-                // Heart Rate
                 HealthDataItem(
                     icon: "heart.fill",
                     color: .red,
-                    label: "HR",
+                    label: String(localized: "HR"),
                     value: heartRateText,
                     unit: "bpm"
                 )
 
                 Divider().frame(height: 40)
 
-                // Steps
                 HealthDataItem(
                     icon: "figure.walk",
                     color: AppTheme.teal,
-                    label: "Steps",
+                    label: String(localized: "Steps"),
                     value: stepCountText,
-                    unit: "steps"
+                    unit: String(localized: "steps")
                 )
             }
         }

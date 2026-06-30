@@ -95,7 +95,8 @@ class AIService: ObservableObject {
         }
 
         let summary = summarySentences.isEmpty ? text : summarySentences.joined(separator: "\n")
-        let advice = adviceSentences.isEmpty ? "Please follow doctor's orders, take medication on time, and have regular check-ups." : adviceSentences.joined(separator: "\n")
+        let defaultAdvice = String(localized: "Please follow doctor's orders, take medication on time, and have regular check-ups.")
+        let advice = adviceSentences.isEmpty ? defaultAdvice : adviceSentences.joined(separator: "\n")
 
         // Medication database
         let medications = extractMedications(from: text)
@@ -104,26 +105,27 @@ class AIService: ObservableObject {
     }
 
     private func extractMedications(from text: String) -> [(name: String, dose: String)] {
+        let asPrescribed = String(localized: "As prescribed")
         let medDatabase: [(String, String)] = [
             // Antihypertensives
-            ("Nifedipine", "As prescribed"), ("Amlodipine", "As prescribed"), ("Felodipine", "As prescribed"),
-            ("Losartan", "As prescribed"), ("Valsartan", "As prescribed"), ("Irbesartan", "As prescribed"),
-            ("Captopril", "As prescribed"), ("Enalapril", "As prescribed"), ("Benazepril", "As prescribed"),
-            ("Metoprolol", "As prescribed"), ("Bisoprolol", "As prescribed"),
+            ("Nifedipine", asPrescribed), ("Amlodipine", asPrescribed), ("Felodipine", asPrescribed),
+            ("Losartan", asPrescribed), ("Valsartan", asPrescribed), ("Irbesartan", asPrescribed),
+            ("Captopril", asPrescribed), ("Enalapril", asPrescribed), ("Benazepril", asPrescribed),
+            ("Metoprolol", asPrescribed), ("Bisoprolol", asPrescribed),
             // Statins
-            ("Atorvastatin", "As prescribed"), ("Rosuvastatin", "As prescribed"), ("Simvastatin", "As prescribed"),
+            ("Atorvastatin", asPrescribed), ("Rosuvastatin", asPrescribed), ("Simvastatin", asPrescribed),
             // Diabetes
-            ("Metformin", "As prescribed"), ("Acarbose", "As prescribed"), ("Glimepiride", "As prescribed"),
-            ("Insulin", "As prescribed"), ("Dapagliflozin", "As prescribed"),
+            ("Metformin", asPrescribed), ("Acarbose", asPrescribed), ("Glimepiride", asPrescribed),
+            ("Insulin", asPrescribed), ("Dapagliflozin", asPrescribed),
             // Antiplatelet
-            ("Aspirin", "As prescribed"), ("Clopidogrel", "As prescribed"), ("Ticagrelor", "As prescribed"),
+            ("Aspirin", asPrescribed), ("Clopidogrel", asPrescribed), ("Ticagrelor", asPrescribed),
             // Cardiovascular
-            ("Nitroglycerin", "As prescribed"), ("Isosorbide Mononitrate", "As prescribed"), ("Trimetazidine", "As prescribed"),
-            ("Warfarin", "As prescribed"), ("Rivaroxaban", "As prescribed"), ("Dabigatran", "As prescribed"),
+            ("Nitroglycerin", asPrescribed), ("Isosorbide Mononitrate", asPrescribed), ("Trimetazidine", asPrescribed),
+            ("Warfarin", asPrescribed), ("Rivaroxaban", asPrescribed), ("Dabigatran", asPrescribed),
             // Diuretics
-            ("Furosemide", "As prescribed"), ("Hydrochlorothiazide", "As prescribed"), ("Spironolactone", "As prescribed"),
+            ("Furosemide", asPrescribed), ("Hydrochlorothiazide", asPrescribed), ("Spironolactone", asPrescribed),
             // Others
-            ("Digoxin", "As prescribed"), ("Amiodarone", "As prescribed"), ("Propafenone", "As prescribed")
+            ("Digoxin", asPrescribed), ("Amiodarone", asPrescribed), ("Propafenone", asPrescribed)
         ]
 
         var result: [(name: String, dose: String)] = []
@@ -228,7 +230,7 @@ class AIService: ObservableObject {
         if let meds = json["medications"] as? [[String: Any]] {
             for m in meds {
                 let name = m["name"] as? String ?? ""
-                let dose = m["dose"] as? String ?? "As prescribed"
+                let dose = m["dose"] as? String ?? String(localized: "As prescribed")
                 medications.append((name, dose))
             }
         }

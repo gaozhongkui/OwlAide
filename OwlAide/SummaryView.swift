@@ -15,7 +15,7 @@ struct SummaryView: View {
         VStack(spacing: 0) {
             // Header
             VStack(alignment: .leading, spacing: 4) {
-                Text("\(formatDate(record?.date ?? Date())) · \(record?.department ?? "Unknown Dept")")
+                Text("\(formatDate(record?.date ?? Date())) · \(record?.department ?? String(localized: "Unknown Dept"))")
                     .font(.system(size: 13))
                     .opacity(0.75)
                 Text("Visit Summary")
@@ -42,26 +42,26 @@ struct SummaryView: View {
                     }
 
                     // Diagnosis
-                    SummaryCard(icon: "stethoscope", iconColor: AppTheme.teal, bgColor: AppTheme.tealLight, title: "Diagnosis") {
-                        SummaryBullet(text: record?.aiSummary ?? "No summary available", color: AppTheme.teal)
+                    SummaryCard(icon: "stethoscope", iconColor: AppTheme.teal, bgColor: AppTheme.tealLight, title: String(localized: "Diagnosis")) {
+                        SummaryBullet(text: record?.aiSummary ?? String(localized: "No summary available"), color: AppTheme.teal)
                     }
 
                     // Medication
-                    SummaryCard(icon: "pill.fill", iconColor: AppTheme.warm, bgColor: AppTheme.warmLight, title: "Medication") {
+                    SummaryCard(icon: "pill.fill", iconColor: AppTheme.warm, bgColor: AppTheme.warmLight, title: String(localized: "Medication")) {
                         VStack(alignment: .leading, spacing: 10) {
                             if let meds = record?.medications, !meds.isEmpty {
                                 ForEach(meds) { med in
                                     SummaryBullet(text: "\(med.name) \(med.dose)", color: AppTheme.warm)
                                 }
                             } else {
-                                SummaryBullet(text: "No new medication added", color: AppTheme.warm)
+                                SummaryBullet(text: String(localized: "No new medication added"), color: AppTheme.warm)
                             }
                         }
                     }
 
                     // Follow-up
-                    SummaryCard(icon: "calendar", iconColor: AppTheme.purple, bgColor: AppTheme.purpleLight, title: "Follow-up") {
-                        SummaryBullet(text: "Follow-up recommended in a month (by July 15).\nPlease bring this report for comparison.", color: AppTheme.purple)
+                    SummaryCard(icon: "calendar", iconColor: AppTheme.purple, bgColor: AppTheme.purpleLight, title: String(localized: "Follow-up")) {
+                        SummaryBullet(text: String(localized: "Follow-up recommended in a month. Please bring this report for comparison."), color: AppTheme.purple)
                     }
                 }
                 .padding(16)
@@ -94,13 +94,12 @@ struct SummaryView: View {
 
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
+        formatter.dateStyle = .medium
         return formatter.string(from: date)
     }
 
     private func shareViaCloudKit() {
         guard let record = record else { return }
-        let emails = familyMembers.compactMap { $0.email.isEmpty ? nil : $0.email }
         Task {
             do {
                 let share = try await CloudKitService.shared.shareRecord(record)
@@ -117,7 +116,10 @@ struct SummaryView: View {
     }
 
     private func shareViaText(_ record: VisitRecord) {
-        let text = "[OwlAide Visit Report]\nDepartment: \(record.department)\nAdvice: \(record.doctorAdvice)"
+        let title = String(localized: "[OwlAide Visit Report]")
+        let deptLabel = String(localized: "Department")
+        let adviceLabel = String(localized: "Advice")
+        let text = "\(title)\n\(deptLabel): \(record.department)\n\(adviceLabel): \(record.doctorAdvice)"
         let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let rootVC = windowScene.windows.first?.rootViewController {
@@ -144,7 +146,7 @@ struct AudioPlaybackRow: View {
                     .font(.system(size: 44)).foregroundColor(AppTheme.teal)
             }
             VStack(alignment: .leading, spacing: 4) {
-                Text(audioManager.isPlaying ? "Playing recording..." : "Play doctor's conversation").font(.system(size: 13))
+                Text(audioManager.isPlaying ? String(localized: "Playing recording...") : String(localized: "Play doctor's conversation")).font(.system(size: 13))
                 Capsule().fill(Color.gray.opacity(0.1)).frame(height: 4)
                     .overlay(GeometryReader { g in
                         if audioManager.isPlaying { Capsule().fill(AppTheme.teal).frame(width: g.size.width * 0.6) }
@@ -160,7 +162,7 @@ struct AdviceBox: View {
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
             Text("⚠️").font(.system(size: 20))
-            Text("Doctor's Advice: ").font(.system(size: 13, weight: .bold)).foregroundColor(AppTheme.warningText) +
+            Text("\(String(localized: "Doctor's Advice")): ").font(.system(size: 13, weight: .bold)).foregroundColor(AppTheme.warningText) +
             Text(advice).font(.system(size: 13)).foregroundColor(AppTheme.warningText)
         }
         .padding(12).frame(maxWidth: .infinity, alignment: .leading)

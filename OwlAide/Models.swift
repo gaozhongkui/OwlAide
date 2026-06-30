@@ -6,6 +6,15 @@ enum FamilyRole: String, Codable, CaseIterable {
     case child = "Child"
     case spouse = "Spouse"
     case other = "Other"
+
+    var localizedName: String {
+        switch self {
+        case .caregiver: return String(localized: "Primary Caregiver")
+        case .child: return String(localized: "Child")
+        case .spouse: return String(localized: "Spouse")
+        case .other: return String(localized: "Other")
+        }
+    }
 }
 
 @Model

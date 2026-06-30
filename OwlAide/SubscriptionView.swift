@@ -50,17 +50,17 @@ struct SubscriptionView: View {
                             .foregroundColor(.gray)
                             .padding(.bottom, 12)
 
-                        FeatureRow(feature: "🧠 AI Summary", free: "Local Analysis", pro: "Remote GPT-4o", purchased: manager.isPurchased)
+                        FeatureRow(feature: String(localized: "🧠 AI Summary"), free: String(localized: "Local Analysis"), pro: String(localized: "Remote GPT-4o"), purchased: manager.isPurchased)
                         Divider()
-                        FeatureRow(feature: "☁️ iCloud Family Share", free: "Single Device", pro: "Multi-device + Sharing", purchased: manager.isPurchased)
+                        FeatureRow(feature: String(localized: "☁️ iCloud Family Share"), free: String(localized: "Single Device"), pro: String(localized: "Multi-device + Sharing"), purchased: manager.isPurchased)
                         Divider()
-                        FeatureRow(feature: "🏥 Visit Reminders", free: "Manual", pro: "Automatic Push", purchased: manager.isPurchased)
+                        FeatureRow(feature: String(localized: "🏥 Visit Reminders"), free: String(localized: "Manual"), pro: String(localized: "Automatic Push"), purchased: manager.isPurchased)
                         Divider()
-                        FeatureRow(feature: "💊 Med Reminders", free: "✅ Free", pro: "✅ Free", purchased: true)
+                        FeatureRow(feature: String(localized: "💊 Med Reminders"), free: String(localized: "✅ Free"), pro: String(localized: "✅ Free"), purchased: true)
                         Divider()
-                        FeatureRow(feature: "🎤 Voice Input", free: "✅ Free", pro: "✅ Free", purchased: true)
+                        FeatureRow(feature: String(localized: "🎤 Voice Input"), free: String(localized: "✅ Free"), pro: String(localized: "✅ Free"), purchased: true)
                         Divider()
-                        FeatureRow(feature: "❤️ HealthKit", free: "✅ Free", pro: "✅ Free", purchased: true)
+                        FeatureRow(feature: String(localized: "❤️ HealthKit"), free: String(localized: "✅ Free"), pro: String(localized: "✅ Free"), purchased: true)
                     }
                     .padding()
                     .background(Color.white)
@@ -158,8 +158,4 @@ struct FeatureRow: View {
         }
         .padding(.vertical, 10)
     }
-}
-
-#Preview {
-    SubscriptionView()
 }

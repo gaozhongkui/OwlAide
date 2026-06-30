@@ -10,7 +10,7 @@ struct RecordView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Visit Recording")
                     .font(.system(size: 18, weight: .bold))
-                Text("July 3 · Cardiology · General Hospital")
+                Text(String(localized: "July 3 · Cardiology · General Hospital")) // Note: In a real app, these would be dynamic
                     .font(.system(size: 13))
                     .opacity(0.6)
             }

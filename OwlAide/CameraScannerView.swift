@@ -41,7 +41,7 @@ struct CameraScannerView: UIViewControllerRepresentable {
                 // Transcript is the recognized medication name
                 // Take the transcript as name and simulate a default dosage
                 let detectedName = text.transcript
-                parent.onDetected(detectedName, "Recognized from photo")
+                parent.onDetected(detectedName, String(localized: "Recognized from photo"))
                 parent.dismiss()
             default:
                 break
@@ -56,7 +56,7 @@ struct CameraScannerView: UIViewControllerRepresentable {
                     // Basic length check to avoid accidental triggers
                     if text.transcript.count > 3 {
                         DispatchQueue.main.async {
-                            self.parent.onDetected(text.transcript, "Auto-detected dosage")
+                            self.parent.onDetected(text.transcript, String(localized: "Auto-detected dosage"))
                             self.parent.dismiss()
                         }
                     }

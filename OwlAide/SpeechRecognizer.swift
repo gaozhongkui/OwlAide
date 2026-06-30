@@ -9,10 +9,15 @@ class SpeechRecognizer: ObservableObject {
     @Published var isRecognizing = false
     @Published var authorizationStatus: SFSpeechRecognizerAuthorizationStatus = .notDetermined
 
-    private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
+    private var speechRecognizer: SFSpeechRecognizer?
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
+
+    init() {
+        // Use current locale for speech recognition
+        speechRecognizer = SFSpeechRecognizer(locale: Locale.current)
+    }
 
     // MARK: - Permissions
 
@@ -28,6 +33,10 @@ class SpeechRecognizer: ObservableObject {
 
     func startLiveRecognition() throws {
         stopLiveRecognition()
+
+        guard let speechRecognizer = speechRecognizer, speechRecognizer.isAvailable else {
+            return
+        }
 
         let audioSession = AVAudioSession.sharedInstance()
         try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
@@ -79,7 +88,9 @@ class SpeechRecognizer: ObservableObject {
     // MARK: - Audio File Transcription (Post-visit processing)
 
     func transcribeFile(url: URL, completion: @escaping (String) -> Void) {
-        guard FileManager.default.fileExists(atPath: url.path) else {
+        guard FileManager.default.fileExists(atPath: url.path),
+              let speechRecognizer = speechRecognizer,
+              speechRecognizer.isAvailable else {
             completion("")
             return
         }

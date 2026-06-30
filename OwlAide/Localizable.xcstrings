@@ -1,0 +1,1107 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "[OwlAide Visit Report]" : {
+
+    },
+    "%@" : {
+
+    },
+    "%@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "%@ · %@ has not been confirmed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@ has not been confirmed"
+          }
+        }
+      }
+    },
+    "%@: " : {
+
+    },
+    "%@: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "%@: %@x" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$@x"
+          }
+        }
+      }
+    },
+    "%lld" : {
+
+    },
+    "%lld/%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "+ %@" : {
+
+    },
+    "☁️ iCloud Family Share" : {
+
+    },
+    "⚠️" : {
+
+    },
+    "⚠️ Don't forget your meds" : {
+
+    },
+    "✅ Free" : {
+
+    },
+    "❤️ HealthKit" : {
+
+    },
+    "🎤 Voice Input" : {
+
+    },
+    "🏥 Upcoming Visit Tomorrow" : {
+
+    },
+    "🏥 Visit Reminders" : {
+
+    },
+    "💊" : {
+
+    },
+    "💊 Med Reminders" : {
+
+    },
+    "💊 Time for Medication" : {
+
+    },
+    "🧠 AI Summary" : {
+
+    },
+    "1.0" : {
+
+    },
+    "About" : {
+
+    },
+    "Accessibility" : {
+
+    },
+    "Add" : {
+
+    },
+    "Add family" : {
+
+    },
+    "Add Family Member" : {
+
+    },
+    "Add New Family Member" : {
+
+    },
+    "Advice" : {
+
+    },
+    "After adding family, they can receive your visit reminders and AI summaries, and be contacted quickly in emergencies." : {
+
+    },
+    "AI has organized the visit details for you" : {
+
+    },
+    "AI is generating your summary..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يقوم الذكاء الاصطناعي بإنشاء ملخصك..."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KI erstellt Ihre Zusammenfassung..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA está generando tu resumen..."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI आपका सारांश तैयार कर रहा है..."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'IA sta generando il tuo riepilogo..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIが要約を生成しています..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI가 요약을 생성하고 있습니다..."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A IA está gerando seu resumo..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapay zeka özetinizi oluşturuyor..."
+          }
+        }
+      }
+    },
+    "AI Summary (Optional)" : {
+
+    },
+    "Analyzing doctor's advice and medication..." : {
+
+    },
+    "API Base URL (e.g., https://api.openai.com/v1)" : {
+
+    },
+    "API Key" : {
+
+    },
+    "Apple ID Email (for automatic sharing)" : {
+
+    },
+    "As prescribed" : {
+
+    },
+    "Auto-detected dosage" : {
+
+    },
+    "Automatic Push" : {
+
+    },
+    "Basic Information" : {
+
+    },
+    "BP" : {
+
+    },
+    "Calling emergency contact and sending location" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Child" : {
+
+    },
+    "Close" : {
+
+    },
+    "Configure an OpenAI-compatible API for more accurate visit summaries. Local analysis is used otherwise." : {
+
+    },
+    "Confirmed taking %@" : {
+
+    },
+    "Contact Info" : {
+
+    },
+    "Current Medications" : {
+
+    },
+    "Department" : {
+
+    },
+    "Details synced to OwlAide Family Share." : {
+
+    },
+    "Diagnosis" : {
+
+    },
+    "Doctor's Advice" : {
+
+    },
+    "Done" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fertig"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hecho"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हो गया"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fine"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluído"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamam"
+          }
+        }
+      }
+    },
+    "Elder Mode" : {
+
+    },
+    "Elder Mode increases font size and enables voice feedback." : {
+
+    },
+    "Emergency Contacts" : {
+
+    },
+    "End Recording & Summarize" : {
+
+    },
+    "Failed to get location" : {
+
+    },
+    "Family" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العائلة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Familie"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Familia"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "परिवार"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Famiglia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "家族"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가족"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Família"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aile"
+          }
+        }
+      }
+    },
+    "Family Activity" : {
+
+    },
+    "Family Members" : {
+
+    },
+    "Family Sharing Center" : {
+
+    },
+    "Fill in their Apple ID email to automatically share reports with them without manual steps." : {
+
+    },
+    "Follow-up" : {
+
+    },
+    "Follow-up recommended in a month. Please bring this report for comparison." : {
+
+    },
+    "Font Scale" : {
+
+    },
+    "Future Visits" : {
+
+    },
+    "General Hospital · Cardiology" : {
+
+    },
+    "Good Morning" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صباح الخير"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guten Morgen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buenos días"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "शुभ प्रभात"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buongiorno"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "おはようございます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "좋은 아침입니다"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bom dia"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günaydın"
+          }
+        }
+      }
+    },
+    "Health Data" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "البيانات الصحية"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datos de salud"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्वास्थ्य डेटा"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "健康データ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sağlık Verileri"
+          }
+        }
+      }
+    },
+    "Hello" : {
+
+    },
+    "High Contrast" : {
+
+    },
+    "History" : {
+
+    },
+    "Hold to Ask Question" : {
+
+    },
+    "Hold to Speak" : {
+
+    },
+    "Home" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الرئيسية"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startseite"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicio"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "होम"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホーム"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "홈"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Início"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ana Sayfa"
+          }
+        }
+      }
+    },
+    "HR" : {
+
+    },
+    "July 3 · Cardiology · General Hospital" : {
+
+    },
+    "July 3 (Thu) at 9:00 AM" : {
+
+    },
+    "Keep your children informed about your health" : {
+
+    },
+    "Last Summary" : {
+
+    },
+    "Last synced" : {
+
+    },
+    "Lat" : {
+
+    },
+    "Listening..." : {
+
+    },
+    "Local Analysis" : {
+
+    },
+    "Location" : {
+
+    },
+    "Long" : {
+
+    },
+    "Manage Subscription" : {
+
+    },
+    "Manual" : {
+
+    },
+    "Medication" : {
+
+    },
+    "Medication Reminders" : {
+
+    },
+    "Meds" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الأدوية"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medikamente"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medicinas"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "दवाएं"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farmaci"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お薬"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "투약"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remédios"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İlaçlar"
+          }
+        }
+      }
+    },
+    "Model Name" : {
+
+    },
+    "Multi-device + Sharing" : {
+
+    },
+    "My Medbox" : {
+
+    },
+    "Name" : {
+
+    },
+    "NEXT VISIT" : {
+
+    },
+    "No family members added yet" : {
+
+    },
+    "No medications scheduled" : {
+
+    },
+    "No new medication added" : {
+
+    },
+    "No records" : {
+
+    },
+    "No reports shared by family" : {
+
+    },
+    "No summary available" : {
+
+    },
+    "No upcoming visits" : {
+
+    },
+    "Note symptoms" : {
+
+    },
+    "One-time purchase, lifetime access" : {
+
+    },
+    "Other" : {
+
+    },
+    "OwlAide is an assistant app for senior healthcare visits.\nAll data is encrypted and synced via iCloud; no third-party servers involved." : {
+
+    },
+    "OwlAide Pro" : {
+
+    },
+    "Personal Information" : {
+
+    },
+    "Phone Number" : {
+
+    },
+    "Play doctor's conversation" : {
+
+    },
+    "Playing recording..." : {
+
+    },
+    "Please contact me ASAP!" : {
+
+    },
+    "Please follow doctor's orders, take medication on time, and have regular check-ups." : {
+
+    },
+    "Prepare" : {
+
+    },
+    "Prepare for Visit" : {
+
+    },
+    "Preparing for visit" : {
+
+    },
+    "Primary Caregiver" : {
+
+    },
+    "Pro" : {
+
+    },
+    "Pro Exclusive Features" : {
+
+    },
+    "Questions for the Doctor" : {
+
+    },
+    "Quick Actions" : {
+
+    },
+    "Ready, Start Visit →" : {
+
+    },
+    "Recognized from photo" : {
+
+    },
+    "Recognizing" : {
+
+    },
+    "Record" : {
+
+    },
+    "Recording..." : {
+
+    },
+    "Relationship (e.g. Daughter)" : {
+
+    },
+    "Remote GPT-4o" : {
+
+    },
+    "Reports Shared by Family" : {
+
+    },
+    "Restore Purchase" : {
+
+    },
+    "Role" : {
+
+    },
+    "Saved automatically to local storage" : {
+
+    },
+    "Scan Pill Box" : {
+
+    },
+    "Secure iCloud Sharing" : {
+
+    },
+    "Secure sharing via iCloud. Family members view with their own Apple ID." : {
+
+    },
+    "Set as Emergency Contact" : {
+
+    },
+    "Settings" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإعدادات"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेटिंग्स"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostazioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarlar"
+          }
+        }
+      }
+    },
+    "Share" : {
+
+    },
+    "Share My Reports" : {
+
+    },
+    "Share via iCloud" : {
+
+    },
+    "Share visit reports securely via encrypted Apple iCloud. Family members view with their own Apple ID; data never touches third-party servers." : {
+
+    },
+    "Share with Family" : {
+
+    },
+    "Shared reports will appear here.\nTap the refresh button in the top right to check for updates." : {
+
+    },
+    "Sharing report with family" : {
+
+    },
+    "Single Device" : {
+
+    },
+    "SOS" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استغاثة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SOS"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SOS"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "एसओएस"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SOS"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "緊急"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "긴급"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SOS"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SOS"
+          }
+        }
+      }
+    },
+    "🆘 SOS Emergency" : {
+
+    },
+    "Spouse" : {
+
+    },
+    "Starting recording" : {
+
+    },
+    "steps" : {
+
+    },
+    "Steps" : {
+
+    },
+    "Synced %lld visit summaries" : {
+
+    },
+    "Take Now" : {
+
+    },
+    "Tap 'Prepare' on the Home screen to create a new visit record." : {
+
+    },
+    "Tell the doctor about your condition" : {
+
+    },
+    "Time" : {
+
+    },
+    "Today" : {
+
+    },
+    "Today is %@" : {
+
+    },
+    "Today's Progress" : {
+
+    },
+    "Unknown Dept" : {
+
+    },
+    "Unlock Now — %@" : {
+
+    },
+    "Unlocked" : {
+
+    },
+    "Upcoming" : {
+
+    },
+    "Use during visit" : {
+
+    },
+    "Version" : {
+
+    },
+    "View" : {
+
+    },
+    "Viewing visit summary" : {
+
+    },
+    "Visit Recording" : {
+
+    },
+    "Visit Report" : {
+
+    },
+    "Visit Schedule" : {
+
+    },
+    "Visit Summary" : {
+
+    },
+    "Visits" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الزيارات"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Besuche"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visitas"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "विजिट"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visite"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "診察"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진료"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visitas"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ziyaretler"
+          }
+        }
+      }
+    },
+    "What's bothering you?" : {
+
+    },
+    "You are a Pro user" : {
+
+    },
+    "Your Name" : {
+
+    }
+  },
+  "version" : "1.0"
+}

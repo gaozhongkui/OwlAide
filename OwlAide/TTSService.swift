@@ -8,7 +8,7 @@ class TTSService: ObservableObject {
 
     private let synthesizer = AVSpeechSynthesizer()
 
-    /// Read text (English, slower rate)
+    /// Read text (Auto-detect language, slower rate)
     func speak(_ text: String) {
         // Avoid overlapping speech
         if synthesizer.isSpeaking {
@@ -16,12 +16,14 @@ class TTSService: ObservableObject {
         }
 
         let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        // Use the current system language for the voice
+        utterance.voice = AVSpeechSynthesisVoice(language: Locale.current.language.languageCode?.identifier ?? "en-US")
         utterance.rate = AVSpeechUtteranceDefaultSpeechRate * 0.7  // Slower, elder-friendly
         utterance.pitchMultiplier = 1.0
         utterance.volume = 1.0
 
         // Ensure audio session is active
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
         try? AVAudioSession.sharedInstance().setActive(true)
 
         synthesizer.speak(utterance)
@@ -34,10 +36,9 @@ class TTSService: ObservableObject {
         }
 
         let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.voice = AVSpeechSynthesisVoice(language: Locale.current.language.languageCode?.identifier ?? "en-US")
         utterance.rate = AVSpeechUtteranceDefaultSpeechRate * 0.7
 
-        // Use delegate or completion handler
         synthesizer.speak(utterance)
 
         // Delayed callback (simple approximation)

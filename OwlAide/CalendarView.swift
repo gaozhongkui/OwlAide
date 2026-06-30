@@ -15,7 +15,7 @@ struct CalendarView: View {
 
             ScrollView {
                 VStack(spacing: 16) {
-                    // Upcoming Visits (filter future records from real data)
+                    // Upcoming Visits
                     let upcomingVisits = records.filter { $0.date >= Date() }
                     if let nextVisit = upcomingVisits.first {
                         VStack(alignment: .leading, spacing: 12) {
@@ -33,7 +33,7 @@ struct CalendarView: View {
                                     .foregroundColor(.gray)
                             }
 
-                            Text("\(nextVisit.department) Follow-up")
+                            Text("\(nextVisit.department) " + String(localized: "Follow-up"))
                                 .font(AppTheme.titleFont)
                             Text("\(nextVisit.hospital)")
                                 .font(AppTheme.bodyFont)
@@ -114,20 +114,22 @@ struct CalendarView: View {
 
     private func formatDate(_ date: Date) -> String {
         let f = DateFormatter()
-        f.locale = Locale(identifier: "en_US")
-        f.dateFormat = "MMM d, EEEE"
+        f.locale = Locale.current
+        f.setLocalizedDateFormatFromTemplate("MMMMdEEEE")
         return f.string(from: date)
     }
 
     private func formatTime(_ date: Date) -> String {
         let f = DateFormatter()
-        f.dateFormat = "HH:mm"
+        f.dateStyle = .none
+        f.timeStyle = .short
         return f.string(from: date)
     }
 
     private func formatShortDate(_ date: Date) -> String {
         let f = DateFormatter()
-        f.dateFormat = "MMM d"
+        f.dateStyle = .medium
+        f.timeStyle = .none
         return f.string(from: date)
     }
 }

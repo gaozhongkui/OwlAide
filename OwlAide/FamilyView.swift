@@ -202,19 +202,19 @@ struct FamilyView: View {
             NavigationStack {
                 Form {
                     Section(header: Text("Basic Information")) {
-                        TextField("Name", text: $newMemberName)
-                        TextField("Relationship (e.g. Daughter)", text: $newMemberRelation)
-                        Picker("Role", selection: $newMemberRole) {
+                        TextField(String(localized: "Name"), text: $newMemberName)
+                        TextField(String(localized: "Relationship (e.g. Daughter)"), text: $newMemberRelation)
+                        Picker(String(localized: "Role"), selection: $newMemberRole) {
                             ForEach(FamilyRole.allCases, id: \.self) { role in
-                                Text(role.rawValue).tag(role)
+                                Text(role.localizedName).tag(role)
                             }
                         }
                     }
 
                     Section(header: Text("Contact Info")) {
-                        TextField("Phone Number", text: $newMemberPhone)
+                        TextField(String(localized: "Phone Number"), text: $newMemberPhone)
                             .keyboardType(.phonePad)
-                        TextField("Apple ID Email (for automatic sharing)", text: $newMemberEmail)
+                        TextField(String(localized: "Apple ID Email (for automatic sharing)"), text: $newMemberEmail)
                             .keyboardType(.emailAddress)
                             .autocapitalization(.none)
                         Toggle("Set as Emergency Contact", isOn: $isEmergencyContact)
@@ -275,7 +275,6 @@ struct FamilyView: View {
     }
 
     private func shareRecord(_ record: VisitRecord) {
-        let emails = familyMembers.compactMap { $0.email.isEmpty ? nil : $0.email }
         Task {
             do {
                 let share = try await CloudKitService.shared.shareRecord(record)
@@ -291,7 +290,7 @@ struct FamilyView: View {
 
     private func formatDate(_ date: Date) -> String {
         let f = DateFormatter()
-        f.dateFormat = "MMM d"
+        f.dateStyle = .medium
         return f.string(from: date)
     }
 }
@@ -343,7 +342,7 @@ struct FamilyMemberRow: View {
                     .foregroundColor(.gray)
 
                 if let lastDate = member.lastSyncDate {
-                    Text("Last synced: \(relativeTime(from: lastDate))")
+                    Text("\(String(localized: "Last synced")): \(relativeTime(from: lastDate))")
                         .font(.system(size: 11))
                         .foregroundColor(.gray.opacity(0.7))
                 }
@@ -357,13 +356,8 @@ struct FamilyMemberRow: View {
     }
 
     private func relativeTime(from date: Date) -> String {
-        let interval = Date().timeIntervalSince(date)
-        if interval < 60 { return "Just now" }
-        if interval < 3600 { return "\(Int(interval / 60))m ago" }
-        if interval < 86400 { return "\(Int(interval / 3600))h ago" }
-        if interval < 259200 { return "\(Int(interval / 86400))d ago" }
-        let f = DateFormatter()
-        f.dateFormat = "MMM dd"
-        return f.string(from: date)
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        return formatter.localizedString(for: date, relativeTo: Date())
     }
 }

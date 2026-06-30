@@ -29,7 +29,7 @@ class NotificationManager: ObservableObject {
               let minute = Int(parts[1]) else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "💊 Time for Medication"
+        content.title = String(localized: "💊 Time for Medication")
         content.body = "\(medicationName) · \(dose)"
         content.sound = .default
         content.badge = 1
@@ -88,7 +88,7 @@ class NotificationManager: ObservableObject {
         guard let reminderDate = Calendar.current.date(byAdding: .day, value: -1, to: visitRecord.date) else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "🏥 Upcoming Visit Tomorrow"
+        content.title = String(localized: "🏥 Upcoming Visit Tomorrow")
         content.body = "\(visitRecord.department) · \(visitRecord.hospital)"
         content.sound = .default
 
@@ -110,8 +110,8 @@ class NotificationManager: ObservableObject {
     /// Send a second reminder if medication hasn't been confirmed after the scheduled time.
     func scheduleMissedDoseReminder(medicationName: String, dose: String, delayMinutes: Int = 30) {
         let content = UNMutableNotificationContent()
-        content.title = "⚠️ Don't forget your meds"
-        content.body = "\(medicationName) · \(dose) has not been confirmed"
+        content.title = String(localized: "⚠️ Don't forget your meds")
+        content.body = String(localized: "\(medicationName) · \(dose) has not been confirmed")
         content.sound = .default
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Double(delayMinutes * 60), repeats: false)

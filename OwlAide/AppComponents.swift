@@ -12,8 +12,8 @@ struct NextVisitCard: View {
                 .foregroundColor(AppTheme.teal)
                 .tracking(0.5)
             VStack(alignment: .leading, spacing: 2) {
-                Text("July 3 (Thu) at 9:00 AM").font(.system(size: 20, weight: .bold))
-                Text("General Hospital · Cardiology").font(.system(size: 14)).foregroundColor(AppTheme.textSub)
+                Text(String(localized: "July 3 (Thu) at 9:00 AM")).font(.system(size: 20, weight: .bold))
+                Text(String(localized: "General Hospital · Cardiology")).font(.system(size: 14)).foregroundColor(AppTheme.textSub)
             }
             HStack(spacing: 8) {
                 Button(action: onPrepare) {
