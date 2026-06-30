@@ -5,6 +5,7 @@ struct PrepareView: View {
     @Bindable var record: VisitRecord
     var onStartRecording: () -> Void = {}
 
+    @StateObject private var speechRecognizer = SpeechRecognizer()
     @State private var isRecordingSymptom = false
     @State private var showCamera = false
 
@@ -28,13 +29,14 @@ struct PrepareView: View {
 
             ScrollView {
                 VStack(spacing: 12) {
-                    // Step 1: 症状
+                    // Step 1: 症状（接入系统语音识别）
                     PrepStepCard(number: 1, title: "哪里不舒服？") {
                         VStack(spacing: 12) {
+                            // 语音识别按钮 — 按住开始，松手停止
                             Button(action: {}) {
                                 HStack {
                                     Image(systemName: isRecordingSymptom ? "waveform" : "mic.fill")
-                                    Text(isRecordingSymptom ? "正在听您说..." : "按住说话")
+                                    Text(isRecordingSymptom ? "正在听您说…" : "按住说话")
                                 }
                                 .font(.system(size: 15, weight: .semibold))
                                 .foregroundColor(AppTheme.teal)
@@ -49,18 +51,33 @@ struct PrepareView: View {
                                         if !isRecordingSymptom {
                                             isRecordingSymptom = true
                                             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                            do {
+                                                try speechRecognizer.startLiveRecognition()
+                                            } catch {
+                                                isRecordingSymptom = false
+                                            }
                                         }
                                     }
                                     .onEnded { _ in
                                         isRecordingSymptom = false
-                                        withAnimation {
-                                            let suggestions = ["胸口发闷", "心跳过快", "腿部浮肿", "头晕目眩"]
-                                            if let s = suggestions.randomElement(), !record.symptoms.contains(s) {
-                                                record.symptoms.append(s)
+                                        speechRecognizer.stopLiveRecognition()
+                                        let text = speechRecognizer.recognizedText.trimmingCharacters(in: .whitespacesAndNewlines)
+                                        if !text.isEmpty && !record.symptoms.contains(text) {
+                                            withAnimation {
+                                                record.symptoms.append(text)
                                             }
                                         }
                                     }
                             )
+
+                            // 实时识别结果显示
+                            if isRecordingSymptom && !speechRecognizer.recognizedText.isEmpty {
+                                Text("识别中：" + speechRecognizer.recognizedText)
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.gray)
+                                    .lineLimit(3)
+                                    .padding(.horizontal, 4)
+                            }
 
                             FlowLayout(spacing: 8) {
                                 ForEach(record.symptoms, id: \.self) { symptom in
@@ -146,6 +163,9 @@ struct PrepareView: View {
                 let newMed = Medication(name: name, dose: dose)
                 record.medications.append(newMed)
             }
+        }
+        .onAppear {
+            speechRecognizer.requestAuthorization()
         }
     }
 }
