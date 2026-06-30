@@ -71,6 +71,9 @@ class SpeechRecognizer: ObservableObject {
         recognitionRequest = nil
         recognitionTask = nil
         isRecognizing = false
+
+        // 释放音频会话，避免阻塞其他音频组件
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 
     // MARK: - 音频文件转文字（用于就诊录音后处理）

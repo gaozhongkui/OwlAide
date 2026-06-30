@@ -319,9 +319,9 @@ struct FamilyMemberRow: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
-                    Text(member.name).font(.system(size: 17, weight: .bold))
+                    Text(member.name).font(AppTheme.bodyFont)
                     Text(member.relation)
-                        .font(.system(size: 12))
+                        .font(AppTheme.captionFont)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(AppTheme.tealLight)
@@ -329,12 +329,23 @@ struct FamilyMemberRow: View {
                         .cornerRadius(4)
                 }
 
+                if !member.email.isEmpty {
+                    HStack(spacing: 4) {
+                        Image(systemName: "envelope.fill")
+                            .font(.system(size: 10))
+                            .foregroundColor(.gray)
+                        Text(member.email)
+                            .font(AppTheme.captionFont)
+                            .foregroundColor(.gray)
+                    }
+                }
+
                 Text("已同步 \(member.syncCount) 条就诊摘要")
-                    .font(.system(size: 13))
+                    .font(AppTheme.captionFont)
                     .foregroundColor(.gray)
 
                 if let lastDate = member.lastSyncDate {
-                    Text("最近同步: \(formatDate(lastDate))")
+                    Text("最近同步: \(relativeTime(from: lastDate))")
                         .font(.system(size: 11))
                         .foregroundColor(.gray.opacity(0.7))
                 }
@@ -347,9 +358,14 @@ struct FamilyMemberRow: View {
         .cornerRadius(12)
     }
 
-    private func formatDate(_ date: Date) -> String {
+    private func relativeTime(from date: Date) -> String {
+        let interval = Date().timeIntervalSince(date)
+        if interval < 60 { return "刚刚" }
+        if interval < 3600 { return "\(Int(interval / 60)) 分钟前" }
+        if interval < 86400 { return "\(Int(interval / 3600)) 小时前" }
+        if interval < 259200 { return "\(Int(interval / 86400)) 天前" }
         let f = DateFormatter()
-        f.dateFormat = "MM月dd日 HH:mm"
+        f.dateFormat = "MM月dd日"
         return f.string(from: date)
     }
 }

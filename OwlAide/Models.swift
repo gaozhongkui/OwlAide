@@ -92,7 +92,8 @@ extension VisitRecord {
         record.aiSummary = dto.aiSummary
         record.doctorAdvice = dto.doctorAdvice
         record.isSharedWithFamily = dto.isSharedWithFamily
-        // Note: medications 需要在有 modelContext 时插入，这里仅用于展示
+        // 还原用药信息（创建临时 Medication 对象用于展示）
+        record.medications = dto.medications.map { Medication(name: $0.name, dose: $0.dose) }
         return record
     }
 }

@@ -17,6 +17,32 @@ struct AppTheme {
     static let orange = Color(hex: "F59E0B")
     static let orangeLight = Color(hex: "FFF8E1")
     static let warningText = Color(hex: "795548")
+
+    // MARK: - 适老化：动态字号
+
+    /// 标题（原 ~20pt → 长者模式 ~30pt）
+    static var titleFont: Font {
+        let base: CGFloat = AppSettings.shared.isElderMode ? 20 : 18
+        return .system(size: base * AppSettings.shared.fontScale, weight: .bold)
+    }
+
+    /// 正文字号（原 ~14pt → 长者模式 ~21pt）
+    static var bodyFont: Font {
+        let base: CGFloat = AppSettings.shared.isElderMode ? 14 : 13
+        return .system(size: base * AppSettings.shared.fontScale)
+    }
+
+    /// 小字（原 ~11pt → 长者模式 ~16pt）
+    static var captionFont: Font {
+        let base: CGFloat = AppSettings.shared.isElderMode ? 11 : 10
+        return .system(size: base * AppSettings.shared.fontScale)
+    }
+
+    /// 按钮字号
+    static var buttonFont: Font {
+        let base: CGFloat = AppSettings.shared.isElderMode ? 15 : 14
+        return .system(size: base * AppSettings.shared.fontScale, weight: .semibold)
+    }
 }
 
 extension Color {

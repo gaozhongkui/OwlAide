@@ -177,9 +177,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-			IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-			LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-			MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -234,9 +234,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-			IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-			LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-			MTL_ENABLE_DEBUG_INFO = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -254,6 +254,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "OwlAide 需要读取健康数据（血压、心率等），以便在就诊时提供给医生参考";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "OwlAide 不会写入健康数据";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "OwlAide 需要在紧急呼救时获取您的位置信息发送给紧急联系人";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "OwlAide 需要使用麦克风进行就诊录音和语音输入症状";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "OwlAide 需要使用语音识别将对话转为文字摘要";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -289,6 +292,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "OwlAide 需要读取健康数据（血压、心率等），以便在就诊时提供给医生参考";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "OwlAide 不会写入健康数据";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "OwlAide 需要在紧急呼救时获取您的位置信息发送给紧急联系人";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "OwlAide 需要使用麦克风进行就诊录音和语音输入症状";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "OwlAide 需要使用语音识别将对话转为文字摘要";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

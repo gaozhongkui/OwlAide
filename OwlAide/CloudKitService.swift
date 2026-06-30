@@ -61,7 +61,7 @@ class CloudKitService: ObservableObject {
         }
 
         // 5. 同时保存根记录和 share
-        let recordsToSave: [CKRecord] = hasAutoParticipants ? [savedRecord, share] : [savedRecord, share]
+        let recordsToSave: [CKRecord] = [savedRecord, share]
         let modifyOp = CKModifyRecordsOperation(recordsToSave: recordsToSave, recordIDsToDelete: nil)
         modifyOp.savePolicy = .changedKeys
 

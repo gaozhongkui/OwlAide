@@ -6,7 +6,9 @@ struct PrepareView: View {
     var onStartRecording: () -> Void = {}
 
     @StateObject private var speechRecognizer = SpeechRecognizer()
+    @StateObject private var questionRecognizer = SpeechRecognizer()
     @State private var isRecordingSymptom = false
+    @State private var isRecordingQuestion = false
     @State private var showCamera = false
 
     var body: some View {
@@ -113,30 +115,59 @@ struct PrepareView: View {
                         }
                     }
 
-                    // Step 3: 问题
+                    // Step 3: 问题（接入语音识别）
                     PrepStepCard(number: 3, title: "想问医生的问题") {
                         VStack(spacing: 0) {
                             ForEach(0..<record.questions.count, id: \.self) { index in
                                 QuestionRow(number: index + 1, text: record.questions[index])
                             }
 
-                            Button(action: {
-                                withAnimation {
-                                    record.questions.append("这个药需要空腹吃吗？")
-                                }
-                            }) {
+                            // 语音识别按钮 — 按住说话录入问题
+                            Button(action: {}) {
                                 HStack {
-                                    Image(systemName: "mic.fill")
-                                    Text("说出您的问题")
+                                    Image(systemName: isRecordingQuestion ? "waveform" : "mic.fill")
+                                    Text(isRecordingQuestion ? "正在听您说…" : "按住说出您的问题")
                                 }
                                 .font(.system(size: 15, weight: .semibold))
                                 .foregroundColor(AppTheme.teal)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 14)
-                                .background(AppTheme.tealLight)
+                                .background(isRecordingQuestion ? AppTheme.tealMid.opacity(0.2) : AppTheme.tealLight)
                                 .cornerRadius(12)
                             }
-                            .padding(.top, 10)
+                            .simultaneousGesture(
+                                DragGesture(minimumDistance: 0)
+                                    .onChanged { _ in
+                                        if !isRecordingQuestion {
+                                            isRecordingQuestion = true
+                                            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                            do {
+                                                try questionRecognizer.startLiveRecognition()
+                                            } catch {
+                                                isRecordingQuestion = false
+                                            }
+                                        }
+                                    }
+                                    .onEnded { _ in
+                                        isRecordingQuestion = false
+                                        questionRecognizer.stopLiveRecognition()
+                                        let text = questionRecognizer.recognizedText.trimmingCharacters(in: .whitespacesAndNewlines)
+                                        if !text.isEmpty {
+                                            withAnimation {
+                                                record.questions.append(text)
+                                            }
+                                        }
+                                    }
+                            )
+
+                            // 实时识别结果显示
+                            if isRecordingQuestion && !questionRecognizer.recognizedText.isEmpty {
+                                Text("识别中：" + questionRecognizer.recognizedText)
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.gray)
+                                    .lineLimit(3)
+                                    .padding(.horizontal, 4)
+                            }
                         }
                     }
                 }
@@ -166,6 +197,7 @@ struct PrepareView: View {
         }
         .onAppear {
             speechRecognizer.requestAuthorization()
+            questionRecognizer.requestAuthorization()
         }
     }
 }
