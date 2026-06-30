@@ -5,6 +5,7 @@ import SwiftData
 struct OwlAideApp: App {
     @StateObject private var settings = AppSettings.shared
     @StateObject private var healthKit = HealthKitManager.shared
+    @StateObject private var subscription = SubscriptionManager.shared
 
     var body: some Scene {
         WindowGroup {
@@ -28,6 +29,8 @@ struct OwlAideApp: App {
                     NotificationManager.shared.requestAuthorization()
                     // 初始化 HealthKit（静默授权）
                     await healthKit.requestAuthorization()
+                    // 检查购买状态
+                    await subscription.checkPurchaseStatus()
                 }
         }
         .modelContainer(for: [VisitRecord.self, Medication.self, FamilyMember.self])

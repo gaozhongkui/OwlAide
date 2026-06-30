@@ -54,6 +54,26 @@ struct SettingsView: View {
                         .disableAutocorrection(true)
                 }
 
+                // MARK: 订阅
+                Section(header: Text("OwlAide Pro")) {
+                    NavigationLink {
+                        SubscriptionView()
+                    } label: {
+                        HStack {
+                            Image(systemName: "crown.fill")
+                                .foregroundColor(AppTheme.orange)
+                            Text("管理订阅")
+                                .font(AppTheme.bodyFont)
+                            Spacer()
+                            if SubscriptionManager.shared.isPurchased {
+                                Text("已解锁")
+                                    .font(AppTheme.captionFont)
+                                    .foregroundColor(AppTheme.teal)
+                            }
+                        }
+                    }
+                }
+
                 // MARK: 关于
                 Section(header: Text("关于")) {
                     HStack {
