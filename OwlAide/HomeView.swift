@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import CloudKit
 
 // MARK: - HomeView (主导航容器)
 struct HomeView: View {
@@ -12,6 +13,9 @@ struct HomeView: View {
     var onSummaryViewClick: (VisitRecord) -> Void = { _ in }
 
     @State private var selectedTab = 0
+    @State private var shareForRecord: VisitRecord?
+    @State private var cloudShare: CKShare?
+    @State private var showCloudSharing = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -24,7 +28,8 @@ struct HomeView: View {
                         onPrepareClick: onPrepareClick,
                         onRecordClick: onRecordClick,
                         onSummaryViewClick: onSummaryViewClick,
-                        onFamilyTabClick: { selectedTab = 3 }
+                        onFamilyTabClick: { selectedTab = 3 },
+                        onShareRecord: { record in shareViaCloudKit(record) }
                     )
                 case 1:
                     CalendarView()
@@ -51,6 +56,47 @@ struct HomeView: View {
             .overlay(Divider(), alignment: .top)
         }
         .edgesIgnoringSafeArea(.bottom)
+        .sheet(isPresented: $showCloudSharing) {
+            if let share = cloudShare {
+                CloudSharingView(
+                    container: CKContainer(identifier: "iCloud.com.owl.aide.owlaide"),
+                    share: share,
+                    onDismiss: { showCloudSharing = false }
+                )
+            }
+        }
+    }
+
+    private func shareViaCloudKit(_ record: VisitRecord) {
+        shareForRecord = record
+        let emails = familyMembers.compactMap { $0.email.isEmpty ? nil : $0.email }
+        Task {
+            do {
+                let share = try await CloudKitService.shared.shareRecord(record, recipientEmails: emails)
+                await MainActor.run {
+                    if emails.isEmpty {
+                        // 无家人 email，弹出手动分享面板
+                        self.cloudShare = share
+                        self.showCloudSharing = true
+                    }
+                    // 有 email 时自动静默分享，无需弹面板
+                }
+            } catch {
+                // CloudKit 不可用时回退到文本分享
+                await MainActor.run {
+                    shareViaText(record)
+                }
+            }
+        }
+    }
+
+    private func shareViaText(_ record: VisitRecord) {
+        let text = "【OwlAide 就诊报告】\n科室：\(record.department)\n建议：\(record.doctorAdvice)\n详细内容已同步至 OwlAide 家庭分享。"
+        let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootVC = windowScene.windows.first?.rootViewController {
+            rootVC.present(av, animated: true)
+        }
     }
 }
 
@@ -62,6 +108,7 @@ struct MainDashboardView: View {
     var onRecordClick: () -> Void
     var onSummaryViewClick: (VisitRecord) -> Void
     var onFamilyTabClick: () -> Void
+    var onShareRecord: (VisitRecord) -> Void = { _ in }
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -76,7 +123,7 @@ struct MainDashboardView: View {
                             Text("李奶奶").font(.system(size: 24, weight: .bold))
                         }
                         Spacer()
-                        // 紧急呼叫按钮 (参考竞品安全功能)
+                        // 紧急呼叫按钮
                         if let emergencyContact = familyMembers.first(where: { $0.isEmergencyContact }) {
                             Button(action: {
                                 if let url = URL(string: "tel://\(emergencyContact.phoneNumber)") {
@@ -120,19 +167,18 @@ struct MainDashboardView: View {
                             QuickCard(icon: "doc.text.fill", iconColor: AppTheme.purple, bgColor: AppTheme.purpleLight, title: "上次摘要", desc: records.first?.department ?? "无记录", action: {
                                 if let last = records.first { onSummaryViewClick(last) }
                             })
-                            // 优化：点击发给子女跳转到家庭页面，或直接触发分享
-                            QuickCard(icon: "paperplane.fill", iconColor: AppTheme.orange, bgColor: AppTheme.orangeLight, title: "发给子女", desc: familyMembers.isEmpty ? "点击添加家人" : "已绑定 \(familyMembers.count) 位家人", action: {
+                            QuickCard(icon: "icloud.fill", iconColor: AppTheme.orange, bgColor: AppTheme.orangeLight, title: "发给子女", desc: familyMembers.isEmpty ? "点击添加家人" : "用 iCloud 分享报告", action: {
                                 if familyMembers.isEmpty {
                                     onFamilyTabClick()
                                 } else if let last = records.first {
-                                    shareRecord(last)
+                                    onShareRecord(last)
                                 } else {
                                     onFamilyTabClick()
                                 }
                             })
                         }
 
-                        // 家人动态 (参考竞品：展示家人是否已查看)
+                        // 家人动态
                         if !familyMembers.isEmpty {
                             VStack(alignment: .leading, spacing: 10) {
                                 Text("家人动态")
@@ -142,7 +188,7 @@ struct MainDashboardView: View {
                                 HStack {
                                     Image(systemName: "checkmark.shield.fill")
                                         .foregroundColor(AppTheme.teal)
-                                    Text("您的健康状况已与 \(familyMembers.count) 位家人保持同步")
+                                    Text("通过 iCloud 安全分享，家人用自己的 Apple ID 查看")
                                         .font(.system(size: 12))
                                         .foregroundColor(.gray)
                                     Spacer()
@@ -186,14 +232,5 @@ struct MainDashboardView: View {
         let f = DateFormatter()
         f.dateFormat = "yyyy年M月d日"
         return f.string(from: date)
-    }
-
-    private func shareRecord(_ record: VisitRecord) {
-        let text = "【OwlAide 就诊报告】\n科室：\(record.department)\n建议：\(record.doctorAdvice)\n详细内容已同步至 OwlAide 家庭分享。"
-        let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let rootVC = windowScene.windows.first?.rootViewController {
-            rootVC.present(av, animated: true)
-        }
     }
 }

@@ -15,15 +15,17 @@ class FamilyMember {
     var relation: String = ""
     var role: String = FamilyRole.child.rawValue
     var phoneNumber: String = ""
+    var email: String = ""
     var syncCount: Int = 0
     var lastSyncDate: Date?
     var isEmergencyContact: Bool = false
 
-    init(name: String, relation: String, role: FamilyRole = .child, phoneNumber: String = "", isEmergency: Bool = false) {
+    init(name: String, relation: String, role: FamilyRole = .child, phoneNumber: String = "", email: String = "", isEmergency: Bool = false) {
         self.name = name
         self.relation = relation
         self.role = role.rawValue
         self.phoneNumber = phoneNumber
+        self.email = email
         self.isEmergencyContact = isEmergency
         self.lastSyncDate = Date()
     }
@@ -54,6 +56,69 @@ class VisitRecord {
         self.hospital = hospital
     }
 }
+
+// MARK: - VisitRecord ↔ JSON 序列化（用于 CloudKit 传输）
+
+extension VisitRecord {
+    func toJSON() -> String {
+        let dto = VisitRecordDTO(
+            id: id,
+            date: date,
+            department: department,
+            hospital: hospital,
+            symptoms: symptoms,
+            medications: medications.map { MedicationDTO(name: $0.name, dose: $0.dose) },
+            questions: questions,
+            audioPath: audioPath,
+            aiSummary: aiSummary,
+            doctorAdvice: doctorAdvice,
+            isSharedWithFamily: isSharedWithFamily
+        )
+        let encoder = JSONEncoder()
+        guard let data = try? encoder.encode(dto),
+              let json = String(data: data, encoding: .utf8) else { return "{}" }
+        return json
+    }
+
+    static func fromJSON(_ json: String) -> VisitRecord? {
+        guard let data = json.data(using: .utf8),
+              let dto = try? JSONDecoder().decode(VisitRecordDTO.self, from: data) else { return nil }
+        let record = VisitRecord(department: dto.department, hospital: dto.hospital)
+        record.id = dto.id
+        record.date = dto.date
+        record.symptoms = dto.symptoms
+        record.questions = dto.questions
+        record.audioPath = dto.audioPath
+        record.aiSummary = dto.aiSummary
+        record.doctorAdvice = dto.doctorAdvice
+        record.isSharedWithFamily = dto.isSharedWithFamily
+        // Note: medications 需要在有 modelContext 时插入，这里仅用于展示
+        return record
+    }
+}
+
+// MARK: - 可序列化的 DTO
+
+private struct VisitRecordDTO: Codable {
+    let id: UUID
+    let date: Date
+    let department: String
+    let hospital: String
+    let symptoms: [String]
+    let medications: [MedicationDTO]
+    let questions: [String]
+    let audioPath: String?
+    let aiSummary: String?
+    let doctorAdvice: String
+    let isSharedWithFamily: Bool
+}
+
+private struct MedicationDTO: Codable {
+    let name: String
+    let dose: String
+}
+
+// MARK: - 原数据模型
 
 @Model
 class Medication {

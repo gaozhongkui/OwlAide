@@ -1,11 +1,15 @@
 import SwiftUI
 import SwiftData
+import CloudKit
 
 struct SummaryView: View {
     var record: VisitRecord?
     var onBackToHome: () -> Void = {}
 
+    @Query private var familyMembers: [FamilyMember]
     @StateObject private var audioManager = AudioManager()
+    @State private var showCloudSharing = false
+    @State private var cloudShare: CKShare?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -32,17 +36,17 @@ struct SummaryView: View {
                         AudioPlaybackRow(audioPath: audioPath, audioManager: audioManager)
                     }
 
-                    // 医生叮嘱 (HTML sum-highlight)
+                    // 医生叮嘱
                     if let advice = record?.doctorAdvice, !advice.isEmpty {
                         AdviceBox(advice: advice)
                     }
 
-                    // 诊断结论 (HTML Diagnostic Card)
+                    // 诊断结论
                     SummaryCard(icon: "stethoscope", iconColor: AppTheme.teal, bgColor: AppTheme.tealLight, title: "诊断结论") {
                         SummaryBullet(text: record?.aiSummary ?? "暂无结论", color: AppTheme.teal)
                     }
 
-                    // 用药安排 (HTML Medication Card)
+                    // 用药安排
                     SummaryCard(icon: "pill.fill", iconColor: AppTheme.warm, bgColor: AppTheme.warmLight, title: "用药安排") {
                         VStack(alignment: .leading, spacing: 10) {
                             if let meds = record?.medications, !meds.isEmpty {
@@ -55,7 +59,7 @@ struct SummaryView: View {
                         }
                     }
 
-                    // 复诊安排 (补全 HTML Follow-up Card)
+                    // 复诊安排
                     SummaryCard(icon: "calendar", iconColor: AppTheme.purple, bgColor: AppTheme.purpleLight, title: "复诊安排") {
                         SummaryBullet(text: "建议一个月后复查（7月15日前）\n届时请带上此次检查报告对比。", color: AppTheme.purple)
                     }
@@ -66,7 +70,7 @@ struct SummaryView: View {
 
             // Bottom Actions
             HStack(spacing: 12) {
-                Button(action: { if let r = record { shareRecord(r) } }) {
+                Button(action: { shareViaCloudKit() }) {
                     Text("发给子女").font(.system(size: 15, weight: .semibold)).foregroundColor(.white)
                         .frame(maxWidth: .infinity).padding(.vertical, 14).background(AppTheme.teal).cornerRadius(14)
                 }
@@ -77,6 +81,15 @@ struct SummaryView: View {
             }
             .padding(16).background(Color.white)
         }
+        .sheet(isPresented: $showCloudSharing) {
+            if let share = cloudShare {
+                CloudSharingView(
+                    container: CKContainer(identifier: "iCloud.com.owl.aide.owlaide"),
+                    share: share,
+                    onDismiss: { showCloudSharing = false }
+                )
+            }
+        }
     }
 
     private func formatDate(_ date: Date) -> String {
@@ -85,7 +98,27 @@ struct SummaryView: View {
         return formatter.string(from: date)
     }
 
-    private func shareRecord(_ record: VisitRecord) {
+    private func shareViaCloudKit() {
+        guard let record = record else { return }
+        let emails = familyMembers.compactMap { $0.email.isEmpty ? nil : $0.email }
+        Task {
+            do {
+                let share = try await CloudKitService.shared.shareRecord(record, recipientEmails: emails)
+                await MainActor.run {
+                    if emails.isEmpty {
+                        self.cloudShare = share
+                        self.showCloudSharing = true
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    shareViaText(record)
+                }
+            }
+        }
+    }
+
+    private func shareViaText(_ record: VisitRecord) {
         let text = "【OwlAide 就诊报告】\n科室：\(record.department)\n建议：\(record.doctorAdvice)"
         let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
