@@ -11,6 +11,7 @@ enum AppScreen {
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @Query(sort: \VisitRecord.date, order: .reverse) private var records: [VisitRecord]
     @State private var currentScreen: AppScreen = .home
     @State private var activeRecord: VisitRecord?
     @StateObject private var aiService = AIService()
@@ -75,8 +76,14 @@ struct ContentView: View {
     }
 
     private func createNewRecord() {
-        let newRecord = VisitRecord(department: "心内科", hospital: "北京协和医院")
+        let lastRecord = records.first
+        let newRecord = VisitRecord(
+            department: lastRecord?.department ?? "",
+            hospital: lastRecord?.hospital ?? ""
+        )
         modelContext.insert(newRecord)
         activeRecord = newRecord
+        // 自动创建复诊提醒（就诊前一天通知）
+        NotificationManager.shared.scheduleFollowUpReminder(visitRecord: newRecord)
     }
 }

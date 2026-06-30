@@ -278,7 +278,7 @@ struct FamilyView: View {
         let emails = familyMembers.compactMap { $0.email.isEmpty ? nil : $0.email }
         Task {
             do {
-                let share = try await CloudKitService.shared.shareRecord(record, recipientEmails: emails)
+                let share = try await CloudKitService.shared.shareRecord(record)
                 await MainActor.run {
                     self.cloudShare = share
                     self.showCloudSharing = true

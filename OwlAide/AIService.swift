@@ -201,8 +201,7 @@ class AIService: ObservableObject {
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
 
-        guard let (data, _) = try? await URLSession.shared.data(for: request),
-              let raw = String(data: data, encoding: .utf8) else { return nil }
+        guard let (data, _) = try? await URLSession.shared.data(for: request) else { return nil }
 
         // 解析 OpenAI 响应
         if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],

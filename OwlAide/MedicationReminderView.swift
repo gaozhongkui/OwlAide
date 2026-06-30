@@ -6,7 +6,6 @@ struct MedicationReminderView: View {
     @Query var medications: [Medication]
     @Environment(\.modelContext) private var modelContext
     @StateObject private var settings = AppSettings.shared
-    @StateObject private var tts = TTSService()
 
     var body: some View {
         VStack(spacing: 0) {

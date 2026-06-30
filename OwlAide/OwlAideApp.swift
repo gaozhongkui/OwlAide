@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-import CloudKit
 
 @main
 struct OwlAideApp: App {

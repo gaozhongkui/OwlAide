@@ -12,8 +12,16 @@ class AppSettings: ObservableObject {
     /// 字号缩放比例：1.0=正常, 1.5=大号（默认）, 2.0=超大
     @AppStorage("fontScale") var fontScale: Double = 1.5
 
+    /// 用户姓名
+    @AppStorage("userName") var userName: String = ""
+
     /// 高对比度模式
     @AppStorage("highContrast") var highContrast: Bool = false
+
+    /// 远程 LLM 配置
+    @AppStorage("llm_base_url") var llmBaseURL: String = ""
+    @AppStorage("llm_api_key") var llmApiKey: String = ""
+    @AppStorage("llm_model") var llmModel: String = "gpt-4o"
 
     // MARK: - 动态字号
 

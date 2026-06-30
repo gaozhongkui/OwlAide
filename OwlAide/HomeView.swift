@@ -14,7 +14,6 @@ struct HomeView: View {
     var onSummaryViewClick: (VisitRecord) -> Void = { _ in }
 
     @State private var selectedTab = 0
-    @State private var shareForRecord: VisitRecord?
     @State private var cloudShare: CKShare?
     @State private var showCloudSharing = false
 
@@ -69,11 +68,10 @@ struct HomeView: View {
     }
 
     private func shareViaCloudKit(_ record: VisitRecord) {
-        shareForRecord = record
         let emails = familyMembers.compactMap { $0.email.isEmpty ? nil : $0.email }
         Task {
             do {
-                let share = try await CloudKitService.shared.shareRecord(record, recipientEmails: emails)
+                let share = try await CloudKitService.shared.shareRecord(record)
                 await MainActor.run {
                     self.cloudShare = share
                     self.showCloudSharing = true
@@ -108,6 +106,7 @@ struct MainDashboardView: View {
 
     @StateObject private var healthKit = HealthKitManager.shared
     @StateObject private var settings = AppSettings.shared
+    @State private var showSettings = false
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -119,9 +118,15 @@ struct MainDashboardView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("早上好").font(AppTheme.captionFont).opacity(0.85)
-                            Text("李奶奶").font(AppTheme.titleFont)
+                            Text(settings.userName.isEmpty ? "您好" : settings.userName)
+                                .font(AppTheme.titleFont)
                         }
                         Spacer()
+                        Button(action: { showSettings = true }) {
+                            Image(systemName: "gearshape.fill")
+                                .font(.system(size: 24))
+                                .foregroundColor(.white.opacity(0.8))
+                        }
                         if let emergencyContact = familyMembers.first(where: { $0.isEmergencyContact }) {
                             Button(action: {
                                 Task {
@@ -243,6 +248,9 @@ struct MainDashboardView: View {
                     .padding(16)
                 }
             }
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
         .task {
             // 拉取最新健康数据

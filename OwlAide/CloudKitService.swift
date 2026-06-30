@@ -28,9 +28,8 @@ class CloudKitService: ObservableObject {
 
     // MARK: - 保存就诊记录到 CloudKit 并创建 CKShare
 
-    /// 分享就诊记录。如果提供家人 email 列表，会自动静默分享给他们（无需弹出面板）；
-    /// 如果自动分享失败或无 email，返回 CKShare 供手动分享面板使用。
-    func shareRecord(_ record: VisitRecord, recipientEmails: [String] = []) async throws -> CKShare {
+    /// 分享就诊记录，返回 CKShare 供 UICloudSharingController 使用
+    func shareRecord(_ record: VisitRecord) async throws -> CKShare {
         await MainActor.run { isUploading = true }
         defer { Task { @MainActor in isUploading = false } }
 
